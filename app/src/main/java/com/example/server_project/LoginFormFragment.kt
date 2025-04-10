@@ -24,6 +24,11 @@ class LoginFormFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val backBtn = view.findViewById<View>(R.id.btn_back)
+        backBtn.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         val editId = view.findViewById<EditText>(R.id.edit_login_id)
         val editPassword = view.findViewById<EditText>(R.id.edit_login_password)
         val loginButton = view.findViewById<Button>(R.id.btn_loginform)
@@ -33,7 +38,6 @@ class LoginFormFragment : Fragment() {
             val password = editPassword.text.toString().trim()
 
             if (id.isNotEmpty() && password.isNotEmpty()) {
-                // 예시: 홈 화면으로 이동
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.main_frm, HomeFragment())
                     .addToBackStack(null)
@@ -43,4 +47,5 @@ class LoginFormFragment : Fragment() {
             }
         }
     }
+
 }
