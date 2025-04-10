@@ -10,15 +10,30 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- 제목 -->
-        <TextView
+        <!-- 상단: 뒤로가기 버튼 + 타이틀 -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="회원가입"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_arrow_back_ios_24"
+                android:contentDescription="뒤로가기"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="회원가입"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+        </LinearLayout>
 
         <!-- 아이디 입력 -->
         <TextView
@@ -48,7 +63,7 @@
             android:inputType="textPassword"
             android:background="@android:drawable/edit_text" />
 
-        <!-- 닉네임 입력 + 중복확인 -->
+        <!-- 닉네임 입력 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +74,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <EditText
                 android:id="@+id/edit_nickname"
                 android:layout_width="0dp"
@@ -67,7 +81,6 @@
                 android:layout_height="wrap_content"
                 android:hint="사용하실 닉네임을 설정해 주세요."
                 android:background="@android:drawable/edit_text" />
-
         </LinearLayout>
 
         <!-- 연락처 입력 -->
@@ -96,7 +109,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <CheckBox
                 android:id="@+id/check_female"
                 android:layout_width="wrap_content"

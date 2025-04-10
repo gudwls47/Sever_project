@@ -24,6 +24,11 @@ class SignupInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val backBtn = view.findViewById<View>(R.id.btn_back)
+        backBtn.setOnClickListener {
+            parentFragmentManager.popBackStack() // 이전 프래그먼트로 돌아가기
+        }
+
         val editId = view.findViewById<EditText>(R.id.edit_id)
         val editPassword = view.findViewById<EditText>(R.id.edit_password)
         val editNickname = view.findViewById<EditText>(R.id.edit_nickname)
@@ -37,7 +42,6 @@ class SignupInfoFragment : Fragment() {
             val phone = editPhone.text.toString().trim()
 
             if (id.isNotEmpty() && password.isNotEmpty() && nickname.isNotEmpty() && phone.isNotEmpty()) {
-                // 모든 정보 입력 완료 → 로그인 화면으로 이동
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.main_frm, LoginFragment())
                     .addToBackStack(null)
@@ -47,4 +51,5 @@ class SignupInfoFragment : Fragment() {
             }
         }
     }
+
 }
