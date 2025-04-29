@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Server_Project</string>
+    <string name="reviewer_rank_sample">1등</string>
+    <string name="reviewer_name_sample">상도동 풍자</string>
+    <string name="reviewer_score_sample">리뷰 온도: 100도</string>
 </resources>

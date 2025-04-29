@@ -10,4 +10,5 @@
     <color name="background">#F5F5F5</color>
     <color name="color_selected">#50CAD3</color>
     <color name="color_unselected">#C6C8C8</color>
+    <color name="my_red">#FF0000</color>
 </resources>
