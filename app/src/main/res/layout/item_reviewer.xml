@@ -1,0 +1,108 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btn_home_box"
+    android:orientation="horizontal"
+    android:background="@drawable/btn_home_box"
+    android:padding="12dp"
+    android:layout_width="380dp"
+    android:layout_height="80dp"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="8dp"
+    android:layout_marginStart="10dp">
+
+    <ImageView
+        android:id="@+id/img_reviewer"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/img_sample_profile"
+        android:scaleType="centerCrop"
+        android:layout_marginEnd="12dp"
+        android:contentDescription="@null" /> <!--  접근성 경고 해결 -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_rank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reviewer_rank_sample"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="@color/my_red"/>
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reviewer_name_sample"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_review_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text= '리뷰 온도 :'
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="2dp"/>
+
+            <!-- 리뷰 온도 텍스트 -->
+            <TextView
+                android:id="@+id/tv_temperature_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100도"
+                android:textSize="14sp"
+                android:textColor="@color/my_red"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="3dp"/>
+
+            <!-- 이모지 -->
+            <TextView
+                android:id="@+id/tv_emoji"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="😍"
+                android:textSize="16sp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="1dp"/>
+            <!-- 빨간색 ProgressBar -->
+            <ProgressBar
+                android:id="@+id/progress_temperature"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:progress="80"
+                android:max="100"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="2dp"
+                android:progressDrawable="@drawable/progress_red_bar"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</LinearLayout>
