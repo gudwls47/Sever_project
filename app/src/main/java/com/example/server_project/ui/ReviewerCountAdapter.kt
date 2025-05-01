@@ -1,10 +1,12 @@
 package com.example.server_project.ui
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.server_project.R
 import com.example.server_project.model.Reviewer
@@ -30,7 +32,23 @@ class ReviewerCountAdapter(private val reviewerList: List<Reviewer>) :
         holder.imgProfile.setImageResource(reviewer.profileImageRes)
         holder.tvRank.text = reviewer.rank
         holder.tvName.text = reviewer.name
-        holder.tvReviewCount.text = " ${reviewer.temperature.toInt()} 개"
+        holder.tvReviewCount.text = "${reviewer.temperature.toInt()} 개"
+
+        // ✅ 클릭 시 ReviewerFragment로 이동
+        holder.itemView.findViewById<View>(R.id.btn_home_box).setOnClickListener {
+            val fragment = ReviewerFragment().apply {
+                arguments = Bundle().apply {
+                    putString("name", reviewer.name)
+                    putFloat("temperature", reviewer.temperature)
+                    putInt("reviewCount", reviewer.temperature.toInt()) // 갯수로 대체한 값
+                }
+            }
+
+            (it.context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun getItemCount(): Int = reviewerList.size

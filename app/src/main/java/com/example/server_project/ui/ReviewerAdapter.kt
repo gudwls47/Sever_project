@@ -1,11 +1,13 @@
 package com.example.server_project.ui
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.server_project.R
 import com.example.server_project.model.Reviewer
@@ -34,19 +36,30 @@ class ReviewerAdapter(private val reviewerList: List<Reviewer>) :
         holder.imgProfile.setImageResource(reviewer.profileImageRes)
         holder.tvRank.text = reviewer.rank
         holder.tvName.text = reviewer.name
-
-        // 온도 텍스트
         holder.tvTemperature.text = "${reviewer.temperature}도"
-
-        // 진행 바
         holder.progressBar.progress = reviewer.temperature.toInt()
 
-        // 이모지
         holder.tvEmoji.text = when (reviewer.temperature) {
             in 90f..100f -> "😍"
             in 70f..89.9f -> "🙂"
             in 50f..69.9f -> "😐"
             else -> "☹️"
+        }
+
+        // ✅ 클릭 시 ReviewerFragment로 이동
+        holder.itemView.findViewById<View>(R.id.btn_home_box).setOnClickListener {
+            val fragment = ReviewerFragment().apply {
+                arguments = Bundle().apply {
+                    putString("name", reviewer.name)
+                    putFloat("temperature", reviewer.temperature)
+                    putInt("reviewCount", reviewer.temperature.toInt()) // 추후 수정 가능
+                }
+            }
+
+            (it.context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, fragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
