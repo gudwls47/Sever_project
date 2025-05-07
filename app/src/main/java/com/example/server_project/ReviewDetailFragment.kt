@@ -66,6 +66,23 @@ class ReviewDetailFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
+        // ✅ 가게 정보 박스를 눌렀을 때 → StoreDetailFragment 로 이동
+        val storeBox = view.findViewById<LinearLayout>(R.id.store_information_box)
+        storeBox.setOnClickListener {
+            val fragment = StoreDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putString("restaurantName", restaurantName)
+                    putFloat("rating", rating)
+                    putIntegerArrayList("storeImages", ArrayList(storeImages)) // 전달
+                }
+            }
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
         return view
     }
 }
