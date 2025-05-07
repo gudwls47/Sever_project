@@ -21,6 +21,7 @@
 
         <!-- 가게 정보 박스 -->
         <LinearLayout
+            android:id="@+id/store_information_box"
             android:orientation="vertical"
             android:layout_width="370dp"
             android:layout_height="180dp"
