@@ -1,0 +1,49 @@
+import os
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_bcrypt import Bcrypt
+from flask_wtf.csrf import CSRFProtect
+
+# Initialize extensions
+db = SQLAlchemy()
+login_manager = LoginManager()
+bcrypt = Bcrypt()
+csrf = CSRFProtect()
+
+def create_app(config_name='default'):
+    from app.config import config
+    
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    
+    # Initialize extensions with app
+    db.init_app(app)
+    login_manager.init_app(app)
+    bcrypt.init_app(app)
+    csrf.init_app(app)
+    
+    # Setup login manager
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message = '이 페이지에 접근하려면 로그인이 필요합니다.'
+    login_manager.login_message_category = 'info'
+    
+    # Ensure upload directory exists
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
+    # Register blueprints
+    from app.routes.auth import auth_bp
+    from app.routes.main import main_bp
+    from app.routes.restaurant import restaurant_bp
+    from app.routes.review import review_bp
+    
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(main_bp)
+    app.register_blueprint(restaurant_bp)
+    app.register_blueprint(review_bp)
+    
+    # Create database tables if they don't exist
+    with app.app_context():
+        db.create_all()
+    
+    return app

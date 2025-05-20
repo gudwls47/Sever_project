@@ -1,0 +1,69 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}마이페이지{% endblock %}
+
+{% block content %}
+<div class="my-page-container">
+    <h1 class="my-page-title">마이페이지</h1>
+    
+    <div class="my-page-profile">
+        <img src="{% if current_user.profile_image %}{{ current_user.profile_image }}{% else %}{{ url_for('static', filename='images/profile-placeholder.jpg') }}{% endif %}" class="my-page-avatar" alt="프로필 이미지">
+        
+        <h2 class="my-page-username">{{ current_user.username }}</h2>
+        
+        <div class="my-page-stats">
+            <div class="my-page-stat">
+                <div class="my-page-stat-value">{{ current_user.trust_score or 0 }}°</div>
+                <div class="my-page-stat-label">나의 온도</div>
+            </div>
+            
+            <div class="my-page-stat">
+                <div class="my-page-stat-value">{{ current_user.average_rating or 0 }}</div>
+                <div class="my-page-stat-label">평균 별점</div>
+            </div>
+        </div>
+        
+        <a href="{{ url_for('auth.edit_profile') }}" class="my-page-edit-button">
+            나의 정보 수정
+        </a>
+    </div>
+    
+    <hr style="margin: 20px 0; border: 1px solid #838383;">
+    
+    <div class="my-page-section">
+        <h3 class="my-page-section-title">내가 평가한 맛집</h3>
+        
+        {% if user_reviews %}
+            {% for review in user_reviews %}
+            <div class="my-review-card">
+                <h4 class="my-review-restaurant">{{ review.restaurant.name }}</h4>
+                <div class="my-review-rating">
+                    {% for i in range(5) %}
+                        {% if i < review.rating %}
+                        <div class="my-review-star active"></div>
+                        {% else %}
+                        <div class="my-review-star"></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <p class="my-review-content">
+                    {% if review.content|length > 100 %}
+                    {{ review.content[:100] }}... <a href="{{ url_for('review.detail', review_id=review.review_id) }}" style="color: #000000;">더보기</a>
+                    {% else %}
+                    {{ review.content }}
+                    {% endif %}
+                </p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; margin: 30px 0;">아직 작성한 리뷰가 없습니다.</p>
+        {% endif %}
+    </div>
+    
+    <hr style="margin: 20px 0; border: 1px solid #838383;">
+    
+    <div style="margin-bottom: 100px;">
+        <!-- 여기에 추가 섹션이 들어갈 수 있습니다 -->
+    </div>
+</div>
+{% endblock %}

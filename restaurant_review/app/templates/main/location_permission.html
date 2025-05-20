@@ -1,0 +1,57 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}위치 정보 허용{% endblock %}
+
+{% block content %}
+<div class="location-permission-container">
+    <p class="location-permission-text">위치 정보를 허용하시겠습니까?</p>
+    
+    <div style="display: flex; justify-content: space-between; width: 200px; margin-top: 50px;">
+        <button id="denyButton" style="padding: 10px 20px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; cursor: pointer;">
+            거부
+        </button>
+        <button id="allowButton" style="padding: 10px 20px; background: #9BDDE2; border: 1px solid rgba(0, 0, 0, 0.3); border-radius: 5px; cursor: pointer;">
+            허용
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#allowButton').click(function() {
+        // 위치 정보 허용 시 처리할 내용
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // 위치 정보를 서버로 전송하는 Ajax 요청
+                $.ajax({
+                    url: "{{ url_for('main.set_location') }}",
+                    type: "POST",
+                    data: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    },
+                    success: function(response) {
+                        // 메인 페이지로 이동
+                        window.location.href = "{{ url_for('main.index') }}";
+                    }
+                });
+            }, function(error) {
+                // 오류 처리
+                alert("위치 정보를 가져오는데 실패했습니다.");
+                window.location.href = "{{ url_for('main.index') }}";
+            });
+        } else {
+            alert("이 브라우저는 위치 정보를 지원하지 않습니다.");
+            window.location.href = "{{ url_for('main.index') }}";
+        }
+    });
+    
+    $('#denyButton').click(function() {
+        // 위치 정보 거부 시 처리할 내용
+        window.location.href = "{{ url_for('main.index') }}";
+    });
+});
+</script>
+{% endblock %}

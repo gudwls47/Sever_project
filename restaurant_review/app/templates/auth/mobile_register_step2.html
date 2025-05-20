@@ -1,0 +1,79 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}회원가입{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <h1 class="signup-title">회원가입</h1>
+    
+    <form method="POST" action="{{ url_for('auth.register') }}">
+        {{ form.csrf_token }}
+        
+        <div class="form-group">
+            <label class="login-input-label">아이디 설정</label>
+            <input type="text" name="username" class="login-input" placeholder="아이디를 설정해 주세요.">
+        </div>
+        
+        <div class="form-group">
+            <label class="login-input-label">비밀번호 설정</label>
+            <input type="password" name="password" class="login-input" placeholder="비밀번호를 설정해 주세요.">
+        </div>
+        
+        <div class="form-group">
+            <label class="login-input-label">닉네임 설정</label>
+            <div style="position: relative;">
+                <input type="text" name="nickname" class="login-input" placeholder="사용하실 닉네임을 설정해 주세요." maxlength="8">
+                <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #959595;">0/8</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="login-input-label">연락처 입력</label>
+            <input type="tel" name="phone_number" class="login-input" placeholder="연락처를 입력해 주세요.">
+        </div>
+        
+        <div class="form-group">
+            <label class="login-input-label">성별</label>
+            <div style="display: flex; margin-top: 10px;">
+                <div style="margin-right: 40px; display: flex; align-items: center;">
+                    <div id="femaleRadio" class="terms-checkbox" style="margin-right: 10px;"></div>
+                    <label for="femaleRadio">여성</label>
+                    <input type="radio" name="gender" value="female" style="display: none;" id="femaleInput">
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div id="maleRadio" class="terms-checkbox" style="margin-right: 10px;"></div>
+                    <label for="maleRadio">남성</label>
+                    <input type="radio" name="gender" value="male" style="display: none;" id="maleInput">
+                </div>
+            </div>
+        </div>
+        
+        <button type="submit" class="signup-button">회원가입 완료</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // 닉네임 글자 수 카운팅
+    $('input[name="nickname"]').on('input', function() {
+        let length = $(this).val().length;
+        $(this).next('span').text(length + '/8');
+    });
+    
+    // 라디오 버튼 토글
+    $('#femaleRadio').click(function() {
+        $(this).addClass('checked');
+        $('#maleRadio').removeClass('checked');
+        $('#femaleInput').prop('checked', true);
+    });
+    
+    $('#maleRadio').click(function() {
+        $(this).addClass('checked');
+        $('#femaleRadio').removeClass('checked');
+        $('#maleInput').prop('checked', true);
+    });
+});
+</script>
+{% endblock %}

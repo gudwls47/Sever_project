@@ -1,0 +1,333 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}맛집 리뷰 랭킹 - 지도 보기{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3">지도로 맛집 보기</h2>
+            <p class="text-muted">지도에서 맛집 위치를 확인하고 쉽게 찾아보세요.</p>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">필터</h5>
+                </div>
+                <div class="card-body">
+                    <form id="mapFilterForm">
+                        <div class="mb-3">
+                            <label for="categoryFilter" class="form-label">카테고리</label>
+                            <select class="form-select" id="categoryFilter">
+                                <option value="">전체</option>
+                                <option value="한식">한식</option>
+                                <option value="중식">중식</option>
+                                <option value="일식">일식</option>
+                                <option value="양식">양식</option>
+                                <option value="분식">분식</option>
+                                <option value="카페">카페</option>
+                                <option value="베이커리">베이커리</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="minRatingFilter" class="form-label">최소 평점</label>
+                            <select class="form-select" id="minRatingFilter">
+                                <option value="0">전체</option>
+                                <option value="3">3점 이상</option>
+                                <option value="4">4점 이상</option>
+                                <option value="4.5">4.5점 이상</option>
+                            </select>
+                        </div>
+                        
+                        <button type="button" id="applyFilterBtn" class="btn btn-primary w-100">적용</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">현재 지역 맛집</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush" id="nearbyRestaurantsList">
+                        <li class="list-group-item text-center py-4">
+                            <span class="text-muted small">지도를 이동하면 주변 맛집이 표시됩니다.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div id="restaurantMap" style="width: 100%; height: 600px;"></div>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <div class="map-controls">
+                        <button id="currentLocationBtn" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-crosshairs me-1"></i> 현재 위치
+                        </button>
+                    </div>
+                    <span class="text-muted small">
+                        <i class="fas fa-info-circle me-1"></i> 마커를 클릭하면 맛집 정보를 볼 수 있습니다.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- 카카오 지도 API -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ map_api_key }}&libraries=services,clusterer,drawing"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 맛집 데이터
+        const restaurants = {{ map_data|tojson }};
+        let map, markers = [];
+        
+        // 지도 초기화
+        function initMap() {
+            const mapContainer = document.getElementById('restaurantMap');
+            const mapOption = {
+                center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 시청 좌표
+                level: 5 // 확대 레벨
+            };
+            
+            map = new kakao.maps.Map(mapContainer, mapOption);
+            
+            // 지도 컨트롤 추가
+            const zoomControl = new kakao.maps.ZoomControl();
+            map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+            
+            // 마커 생성
+            createMarkers(restaurants);
+            
+            // 현재 위치 버튼 이벤트
+            document.getElementById('currentLocationBtn').addEventListener('click', function() {
+                getCurrentLocation();
+            });
+            
+            // 필터 적용 버튼
+            document.getElementById('applyFilterBtn').addEventListener('click', function() {
+                filterMarkers();
+            });
+            
+            // 지도 이동 이벤트 - 주변 맛집 목록 업데이트
+            kakao.maps.event.addListener(map, 'dragend', function() {
+                updateNearbyRestaurants();
+            });
+            
+            // 지도 확대/축소 이벤트
+            kakao.maps.event.addListener(map, 'zoom_changed', function() {
+                updateNearbyRestaurants();
+            });
+            
+            // 초기 주변 맛집 목록 업데이트
+            updateNearbyRestaurants();
+        }
+        
+        // 마커 생성 함수
+        function createMarkers(data) {
+            // 기존 마커 제거
+            removeMarkers();
+            
+            data.forEach(restaurant => {
+                const markerPosition = new kakao.maps.LatLng(restaurant.lat, restaurant.lng);
+                
+                // 평점별 마커 색상 결정
+                let markerImage = null;
+                if (restaurant.rating >= 4.5) {
+                    markerImage = new kakao.maps.MarkerImage(
+                        'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+                        new kakao.maps.Size(24, 35)
+                    );
+                }
+                
+                const marker = new kakao.maps.Marker({
+                    position: markerPosition,
+                    map: map,
+                    title: restaurant.name,
+                    image: markerImage
+                });
+                
+                // 마커에 클릭 이벤트 추가
+                kakao.maps.event.addListener(marker, 'click', function() {
+                    showRestaurantInfo(restaurant);
+                });
+                
+                // 마커 객체에 식당 정보 저장
+                marker.restaurant = restaurant;
+                
+                // 마커 배열에 추가
+                markers.push(marker);
+            });
+        }
+        
+        // 마커 제거 함수
+        function removeMarkers() {
+            markers.forEach(marker => {
+                marker.setMap(null);
+            });
+            markers = [];
+        }
+        
+        // 식당 정보 표시 함수 (인포윈도우)
+        function showRestaurantInfo(restaurant) {
+            // 기존 인포윈도우 닫기
+            if (window.infoWindow) {
+                window.infoWindow.close();
+            }
+            
+            // 인포윈도우 내용
+            const content = `
+                <div class="p-2" style="width: 250px;">
+                    <h5 class="mb-1">${restaurant.name}</h5>
+                    <p class="mb-2 small">
+                        <span class="badge bg-primary">${restaurant.category || '미분류'}</span>
+                        <span class="ms-1">
+                            <span class="text-warning">★</span> ${restaurant.rating.toFixed(1)}
+                        </span>
+                    </p>
+                    <a href="/restaurant/${restaurant.id}" target="_blank" class="btn btn-sm btn-outline-primary w-100">상세보기</a>
+                </div>
+            `;
+            
+            // 인포윈도우 생성
+            window.infoWindow = new kakao.maps.InfoWindow({
+                content: content,
+                removable: true
+            });
+            
+            // 해당 마커에 인포윈도우 표시
+            const marker = markers.find(m => m.restaurant.id === restaurant.id);
+            if (marker) {
+                window.infoWindow.open(map, marker);
+            }
+        }
+        
+        // 현재 위치 가져오기
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const currentPosition = new kakao.maps.LatLng(lat, lng);
+                    
+                    // 현재 위치 마커 생성
+                    const currentMarker = new kakao.maps.Marker({
+                        position: currentPosition,
+                        map: map,
+                        image: new kakao.maps.MarkerImage(
+                            '/static/images/current_location.png',
+                            new kakao.maps.Size(24, 24)
+                        )
+                    });
+                    
+                    // 지도 중심 이동
+                    map.setCenter(currentPosition);
+                    map.setLevel(4); // 확대 레벨 설정
+                    
+                    // 현재 위치 주변 맛집 목록 업데이트
+                    updateNearbyRestaurants();
+                });
+            } else {
+                alert('이 브라우저에서는 위치 정보를 조회할 수 없습니다.');
+            }
+        }
+        
+        // 마커 필터링
+        function filterMarkers() {
+            const category = document.getElementById('categoryFilter').value;
+            const minRating = parseFloat(document.getElementById('minRatingFilter').value);
+            
+            markers.forEach(marker => {
+                let visible = true;
+                
+                // 카테고리 필터
+                if (category && marker.restaurant.category !== category) {
+                    visible = false;
+                }
+                
+                // 평점 필터
+                if (marker.restaurant.rating < minRating) {
+                    visible = false;
+                }
+                
+                // 마커 표시 여부 설정
+                marker.setVisible(visible);
+            });
+            
+            // 주변 맛집 목록 업데이트
+            updateNearbyRestaurants();
+        }
+        
+        // 주변 맛집 목록 업데이트
+        function updateNearbyRestaurants() {
+            const bounds = map.getBounds();
+            const list = document.getElementById('nearbyRestaurantsList');
+            
+            // 보이는 영역 내 마커만 필터링
+            const visibleMarkers = markers.filter(marker => {
+                const position = marker.getPosition();
+                return marker.getVisible() && bounds.contain(position);
+            });
+            
+            // 평점 순으로 정렬
+            visibleMarkers.sort((a, b) => b.restaurant.rating - a.restaurant.rating);
+            
+            // 목록 갱신
+            if (visibleMarkers.length > 0) {
+                let html = '';
+                visibleMarkers.slice(0, 5).forEach(marker => {
+                    const restaurant = marker.restaurant;
+                    html += `
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-0 fw-bold">${restaurant.name}</p>
+                                    <small class="text-muted">${restaurant.category || '미분류'}</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">★ ${restaurant.rating.toFixed(1)}</span>
+                            </div>
+                            <a href="javascript:void(0)" class="stretched-link restaurant-link" data-id="${restaurant.id}"></a>
+                        </li>
+                    `;
+                });
+                
+                list.innerHTML = html;
+                
+                // 목록 아이템 클릭 이벤트
+                document.querySelectorAll('.restaurant-link').forEach(link => {
+                    link.addEventListener('click', function() {
+                        const restaurant = markers.find(m => m.restaurant.id == this.dataset.id).restaurant;
+                        
+                        // 해당 마커 위치로 지도 이동
+                        map.setCenter(new kakao.maps.LatLng(restaurant.lat, restaurant.lng));
+                        map.setLevel(3);
+                        
+                        // 맛집 정보 표시
+                        showRestaurantInfo(restaurant);
+                    });
+                });
+            } else {
+                list.innerHTML = `
+                    <li class="list-group-item text-center py-4">
+                        <span class="text-muted small">이 지역에는 등록된 맛집이 없습니다.</span>
+                    </li>
+                `;
+            }
+        }
+        
+        // 지도 초기화
+        initMap();
+    });
+</script>
+{% endblock %}

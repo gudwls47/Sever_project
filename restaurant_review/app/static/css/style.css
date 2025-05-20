@@ -1,0 +1,220 @@
+/* 전체 스타일 */
+body {
+  font-family: "Roboto", "Noto Sans KR", sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+/* 네비게이션 스타일 */
+.navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: #1a9aa4 !important;
+}
+
+/* 카드 스타일 */
+.card {
+  border-radius: 0.5rem;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: rgba(248, 249, 250, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 버튼 스타일 */
+.btn-primary {
+  background-color: #1a9aa4;
+  border-color: #1a9aa4;
+}
+
+.btn-primary:hover {
+  background-color: #157f87;
+  border-color: #157f87;
+}
+
+.btn-outline-primary {
+  color: #1a9aa4;
+  border-color: #1a9aa4;
+}
+
+.btn-outline-primary:hover {
+  background-color: #1a9aa4;
+  border-color: #1a9aa4;
+}
+
+/* 별점 스타일 */
+.text-warning {
+  color: #ffc107 !important;
+}
+
+/* 온도 게이지 스타일 */
+.temperature-gauge {
+  width: 100px;
+  height: 10px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.gauge-fill {
+  height: 100%;
+  width: var(--temp);
+  background: linear-gradient(90deg, #2196f3 0%, #f44336 100%);
+}
+
+/* 리뷰 이미지 갤러리 */
+.review-images img {
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.review-images img:hover {
+  opacity: 0.9;
+}
+
+/* 평점 선택 스타일 */
+.rating-stars .stars {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.rating-stars .star {
+  margin-right: 5px;
+  color: #ffc107;
+}
+
+/* 리뷰어 프로필 페이지 */
+.reviewer-profile .temperature-gauge {
+  width: 200px;
+  height: 20px;
+  border-radius: 10px;
+}
+
+/* 지도 관련 스타일 */
+#restaurantMap {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .rating-stars .stars {
+    font-size: 20px;
+  }
+
+  .temperature-gauge {
+    width: 80px;
+  }
+
+  .reviewer-profile .temperature-gauge {
+    width: 150px;
+  }
+}
+
+/* 애니메이션 효과 */
+.fade-in {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 인증 배지 */
+.badge.bg-success {
+  background-color: #28a745 !important;
+}
+
+/* 평가 항목 배지 */
+.taste-badge,
+.price-badge,
+.service-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  margin-right: 5px;
+}
+
+.taste-badge {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.price-badge {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.service-badge {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+/* 인풋 필드 포커스 스타일 */
+.form-control:focus {
+  border-color: #1a9aa4;
+  box-shadow: 0 0 0 0.25rem rgba(26, 154, 164, 0.25);
+}
+
+/* 이미지 업로드 미리보기 */
+.image-preview {
+  position: relative;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.image-preview img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.remove-image,
+.remove-receipt {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  padding: 0;
+}
+
+/* 푸터 스타일 */
+footer {
+  margin-top: 3rem;
+  background-color: #f8f9fa;
+}
+
+footer a {
+  color: #1a9aa4;
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: #157f87;
+  text-decoration: underline;
+}

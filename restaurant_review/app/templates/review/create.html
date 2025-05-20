@@ -1,0 +1,474 @@
+{% extends 'layouts/base.html' %} {% block title %}리뷰 작성 - {{
+restaurant.name }}{% endblock %} {% block content %}
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2>리뷰 작성</h2>
+      <h5 class="text-muted">{{ restaurant.name }}</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <!-- 전체 평점 -->
+            <div class="mb-4">
+              <label class="form-label">{{ form.rating.label }}</label>
+              <div class="rating-stars">
+                <div class="stars">
+                  {% for i in range(1, 6) %}
+                  <span class="star" data-value="{{ i }}"
+                    ><i class="far fa-star"></i
+                  ></span>
+                  {% endfor %}
+                </div>
+                {{ form.rating(type="hidden") }} {% if form.rating.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.rating.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 맛 평가 -->
+            <div class="mb-4">
+              <label class="form-label">{{ form.taste_rating.label }}</label>
+              <div class="d-flex">
+                {% for value, label in form.taste_rating.choices %}
+                <div class="form-check form-check-inline me-4">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="{{ form.taste_rating.name }}"
+                    id="{{ form.taste_rating.name }}_{{ value }}"
+                    value="{{ value }}"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="{{ form.taste_rating.name }}_{{ value }}"
+                    >{{ label }}</label
+                  >
+                </div>
+                {% endfor %}
+              </div>
+
+              {% if form.taste_rating.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.taste_rating.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- 가격 평가 -->
+            <div class="mb-4">
+              <label class="form-label">{{ form.price_rating.label }}</label>
+              <div class="d-flex">
+                {% for value, label in form.price_rating.choices %}
+                <div class="form-check form-check-inline me-4">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="{{ form.price_rating.name }}"
+                    id="{{ form.price_rating.name }}_{{ value }}"
+                    value="{{ value }}"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="{{ form.price_rating.name }}_{{ value }}"
+                    >{{ label }}</label
+                  >
+                </div>
+                {% endfor %}
+              </div>
+
+              {% if form.price_rating.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.price_rating.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- 응대 평가 -->
+            <div class="mb-4">
+              <label class="form-label">{{ form.service_rating.label }}</label>
+              <div class="d-flex">
+                {% for value, label in form.service_rating.choices %}
+                <div class="form-check form-check-inline me-4">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="{{ form.service_rating.name }}"
+                    id="{{ form.service_rating.name }}_{{ value }}"
+                    value="{{ value }}"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="{{ form.service_rating.name }}_{{ value }}"
+                    >{{ label }}</label
+                  >
+                </div>
+                {% endfor %}
+              </div>
+
+              {% if form.service_rating.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.service_rating.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- 리뷰 내용 -->
+            <div class="mb-4">
+              {{ form.content.label(class="form-label") }} {% if
+              form.content.errors %} {{ form.content(class="form-control
+              is-invalid", rows=5, placeholder="음식의 맛, 가격, 서비스, 분위기
+              등에 대한 솔직한 후기를 작성해주세요.") }}
+              <div class="invalid-feedback">
+                {% for error in form.content.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              {% else %} {{ form.content(class="form-control", rows=5,
+              placeholder="음식의 맛, 가격, 서비스, 분위기 등에 대한 솔직한
+              후기를 작성해주세요.") }} {% endif %}
+              <div class="form-text text-end" id="content-counter">0/2000</div>
+            </div>
+
+            <!-- 사진 업로드 -->
+            <div class="mb-4">
+              <label class="form-label">{{ form.images.label }}</label>
+
+              <div class="image-upload-container mb-2">
+                <div class="row" id="image-preview-container">
+                  <!-- 이미지 미리보기가 여기에 표시됩니다 -->
+                </div>
+
+                <div class="mt-2">{{ form.images(class="form-control") }}</div>
+              </div>
+
+              {% if form.images.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.images.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+              <div class="form-text">
+                JPG, JPEG, PNG, GIF 파일만 가능하며, 최대 5장까지 업로드
+                가능합니다.
+              </div>
+            </div>
+
+            <!-- 영수증 인증 -->
+            <div class="mb-4">
+              <label class="form-label">{{ form.receipt_image.label }}</label>
+
+              <div class="receipt-upload-container mb-2">
+                <div class="receipt-preview-box mb-2 d-none">
+                  <img
+                    id="receipt-preview"
+                    src=""
+                    alt="영수증 미리보기"
+                    class="img-thumbnail"
+                    style="max-height: 200px"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-receipt"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+
+                <div class="mt-2">
+                  {{ form.receipt_image(class="form-control") }}
+                </div>
+              </div>
+
+              {% if form.receipt_image.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.receipt_image.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+              <div class="form-text text-primary">
+                <i class="fas fa-info-circle"></i> 영수증 인증 시 리뷰어 온도
+                점수에 가산점이 부여됩니다.
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a
+                href="{{ url_for('restaurant.detail', restaurant_id=restaurant.restaurant_id) }}"
+                class="btn btn-outline-secondary me-md-2"
+                >취소</a
+              >
+              {{ form.submit(class="btn btn-primary") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card sticky-top" style="top: 20px">
+        <div class="card-header">
+          <h5 class="mb-0">리뷰 작성 가이드</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <h6>
+              <i class="fas fa-check-circle text-success me-2"></i>좋은 리뷰란?
+            </h6>
+            <ul class="small text-muted">
+              <li>방문한 맛집에 대한 솔직하고 객관적인 평가</li>
+              <li>구체적인 메뉴와 가격 정보 포함</li>
+              <li>맛, 서비스, 위생 등 다양한 측면 언급</li>
+              <li>음식 사진으로 실제 맛집 분위기 전달</li>
+            </ul>
+          </div>
+
+          <div class="mb-3">
+            <h6>
+              <i class="fas fa-exclamation-circle text-danger me-2"></i>이런
+              리뷰는 피해주세요
+            </h6>
+            <ul class="small text-muted">
+              <li>개인적인 감정에 치우친 지나친 비난</li>
+              <li>사실 확인이 되지 않은 내용</li>
+              <li>영업과 관련 없는 사항 언급</li>
+              <li>과도하게 짧거나 불성실한 리뷰</li>
+            </ul>
+          </div>
+
+          <div>
+            <h6>
+              <i class="fas fa-temperature-high text-primary me-2"></i>온도 상승
+              방법
+            </h6>
+            <ul class="small text-muted">
+              <li>영수증 사진 인증으로 방문 증명</li>
+              <li>상세하고 유용한 정보 제공</li>
+              <li>다른 사용자들에게 도움이 되는 리뷰 작성</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .rating-stars .stars {
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .rating-stars .star {
+    margin-right: 5px;
+    color: #ffc107;
+  }
+
+  .receipt-preview-box {
+    position: relative;
+    display: inline-block;
+  }
+
+  .image-preview {
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  .image-preview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+
+  .remove-image,
+  .remove-receipt {
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    padding: 0;
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // 별점 선택 기능
+    const stars = document.querySelectorAll(".rating-stars .star");
+    const ratingInput = document.getElementById("rating");
+
+    // 별점 초기화 (수정 시)
+    const initialRating = ratingInput.value;
+    if (initialRating) {
+      updateStars(initialRating);
+    }
+
+    stars.forEach((star) => {
+      // 호버 효과
+      star.addEventListener("mouseenter", function () {
+        const value = this.getAttribute("data-value");
+        updateStars(value, true);
+      });
+
+      // 클릭 이벤트
+      star.addEventListener("click", function () {
+        const value = this.getAttribute("data-value");
+        ratingInput.value = value;
+        updateStars(value);
+      });
+    });
+
+    // 별점 영역에서 마우스 떠날 때
+    document
+      .querySelector(".rating-stars")
+      .addEventListener("mouseleave", function () {
+        const currentRating = ratingInput.value || 0;
+        updateStars(currentRating);
+      });
+
+    // 별점 UI 업데이트 함수
+    function updateStars(value, isHover = false) {
+      stars.forEach((star) => {
+        const starValue = parseInt(star.getAttribute("data-value"));
+        const icon = star.querySelector("i");
+
+        if (starValue <= value) {
+          icon.classList.remove("far");
+          icon.classList.add("fas");
+        } else {
+          icon.classList.remove("fas");
+          icon.classList.add("far");
+        }
+      });
+    }
+
+    // 리뷰 내용 글자 수 카운터
+    const contentTextarea = document.getElementById("content");
+    const contentCounter = document.getElementById("content-counter");
+
+    contentTextarea.addEventListener("input", function () {
+      const length = this.value.length;
+      contentCounter.textContent = `${length}/2000`;
+
+      if (length > 2000) {
+        contentCounter.classList.add("text-danger");
+      } else {
+        contentCounter.classList.remove("text-danger");
+      }
+    });
+
+    // 초기 글자 수 표시
+    if (contentTextarea.value) {
+      contentCounter.textContent = `${contentTextarea.value.length}/2000`;
+    }
+
+    // 이미지 미리보기 기능
+    const imageInput = document.getElementById("images");
+    const imagePreviewContainer = document.getElementById(
+      "image-preview-container"
+    );
+
+    imageInput.addEventListener("change", function () {
+      imagePreviewContainer.innerHTML = "";
+
+      if (this.files.length > 5) {
+        alert("이미지는 최대 5장까지 업로드 가능합니다.");
+        this.value = "";
+        return;
+      }
+
+      Array.from(this.files).forEach((file, index) => {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const previewDiv = document.createElement("div");
+          previewDiv.className = "col-auto image-preview";
+          previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="미리보기 ${
+            index + 1
+          }" class="img-thumbnail">
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-image" data-index="${index}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+          imagePreviewContainer.appendChild(previewDiv);
+
+          // 이미지 삭제 버튼 이벤트
+          previewDiv
+            .querySelector(".remove-image")
+            .addEventListener("click", function () {
+              // FileList는 직접 수정할 수 없으므로, 새 input을 생성하여 처리
+              const dt = new DataTransfer();
+              const files = imageInput.files;
+              const removeIndex = parseInt(this.getAttribute("data-index"));
+
+              for (let i = 0; i < files.length; i++) {
+                if (i !== removeIndex) {
+                  dt.items.add(files[i]);
+                }
+              }
+
+              imageInput.files = dt.files;
+              previewDiv.remove();
+
+              // 남은 이미지들의 인덱스 업데이트
+              document.querySelectorAll(".remove-image").forEach((btn, idx) => {
+                btn.setAttribute("data-index", idx);
+              });
+            });
+        };
+
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // 영수증 이미지 미리보기
+    const receiptInput = document.getElementById("receipt_image");
+    const receiptPreviewBox = document.querySelector(".receipt-preview-box");
+    const receiptPreview = document.getElementById("receipt-preview");
+
+    receiptInput.addEventListener("change", function () {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          receiptPreview.src = e.target.result;
+          receiptPreviewBox.classList.remove("d-none");
+        };
+
+        reader.readAsDataURL(this.files[0]);
+      } else {
+        receiptPreviewBox.classList.add("d-none");
+      }
+    });
+
+    // 영수증 이미지 삭제 버튼
+    document
+      .querySelector(".remove-receipt")
+      .addEventListener("click", function () {
+        receiptInput.value = "";
+        receiptPreviewBox.classList.add("d-none");
+      });
+  });
+</script>
+{% endblock %}

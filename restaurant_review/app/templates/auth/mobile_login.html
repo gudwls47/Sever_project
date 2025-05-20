@@ -1,0 +1,29 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}로그인{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h1 class="login-title">로그인</h1>
+    
+    <form method="POST" action="{{ url_for('auth.login') }}">
+        {{ form.csrf_token }}
+        
+        <div class="form-group">
+            <label class="login-input-label">아이디 입력</label>
+            <input type="text" name="username" class="login-input" placeholder="아이디를 입력해 주세요.">
+        </div>
+        
+        <div class="form-group">
+            <label class="login-input-label">비밀번호 입력</label>
+            <input type="password" name="password" class="login-input" placeholder="비밀번호를 입력해 주세요.">
+        </div>
+        
+        <button type="submit" class="login-button">로그인</button>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('auth.register') }}" style="color: #000000; text-decoration: none;">회원가입</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

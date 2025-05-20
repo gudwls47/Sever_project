@@ -1,0 +1,165 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}리뷰 작성{% endblock %}
+
+{% block content %}
+<div class="rating-container">
+    <div class="rating-header">
+        <a href="{{ url_for('restaurant.detail', restaurant_id=restaurant.restaurant_id) }}" style="color: #000000;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="rating-title">평가하기</div>
+        <div class="rating-save" id="saveButton">저장</div>
+    </div>
+    
+    <form method="POST" action="{{ url_for('review.create', restaurant_id=restaurant.restaurant_id) }}" enctype="multipart/form-data" id="reviewForm">
+        {{ form.csrf_token }}
+        
+        <div class="rating-section">
+            <div class="rating-overall-label">전체적으로 어떠셨나요?</div>
+            <div class="rating-stars">
+                {% for i in range(1, 6) %}
+                <div class="rating-star" data-value="{{ i }}">
+                    <i class="far fa-star"></i>
+                </div>
+                {% endfor %}
+                <input type="hidden" name="rating" id="rating" value="0">
+            </div>
+        </div>
+        
+        <div class="rating-section">
+            <div class="rating-category-label">항목별 평점</div>
+            
+            <div class="rating-attribute">
+                <div class="rating-attribute-label">맛</div>
+                <div class="rating-attribute-options">
+                    <div class="rating-option">
+                        <input type="radio" name="taste_rating" value="1" id="taste1" class="rating-option-radio">
+                        <label for="taste1" class="rating-option-label">맛없음</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="taste_rating" value="2" id="taste2" class="rating-option-radio">
+                        <label for="taste2" class="rating-option-label">보통</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="taste_rating" value="3" id="taste3" class="rating-option-radio" checked>
+                        <label for="taste3" class="rating-option-label">맛있음</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rating-attribute">
+                <div class="rating-attribute-label">가격</div>
+                <div class="rating-attribute-options">
+                    <div class="rating-option">
+                        <input type="radio" name="price_rating" value="1" id="price1" class="rating-option-radio">
+                        <label for="price1" class="rating-option-label">비쌈</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="price_rating" value="2" id="price2" class="rating-option-radio" checked>
+                        <label for="price2" class="rating-option-label">보통</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="price_rating" value="3" id="price3" class="rating-option-radio">
+                        <label for="price3" class="rating-option-label">쌈</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rating-attribute">
+                <div class="rating-attribute-label">응대</div>
+                <div class="rating-attribute-options">
+                    <div class="rating-option">
+                        <input type="radio" name="service_rating" value="1" id="service1" class="rating-option-radio">
+                        <label for="service1" class="rating-option-label">불친절함</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="service_rating" value="2" id="service2" class="rating-option-radio" checked>
+                        <label for="service2" class="rating-option-label">보통</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" name="service_rating" value="3" id="service3" class="rating-option-radio">
+                        <label for="service3" class="rating-option-label">친절함</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rating-section">
+            <div class="rating-photos-label">영수증 사진</div>
+            <div class="rating-photos-container">
+                <div id="receiptPreview" style="display: none;">
+                    <img id="receiptImage" style="max-width: 100%; max-height: 100%;" />
+                </div>
+                <label for="receipt_photo" id="receiptUpload" class="rating-photo-add">
+                    <i class="fas fa-plus" style="font-size: 24px;"></i>
+                </label>
+                <input type="file" name="receipt_photo" id="receipt_photo" accept="image/*" style="display: none;">
+            </div>
+        </div>
+        
+        <div class="rating-section">
+            <div class="rating-comment-label">방문후기</div>
+            <textarea name="content" class="rating-comment-input" placeholder="음식, 서비스, 분위기, 위생상태 등의 방문 경험을 적어주세요."></textarea>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // 별점 선택
+    $('.rating-star').click(function() {
+        let value = $(this).data('value');
+        $('#rating').val(value);
+        
+        // 별 아이콘 업데이트
+        $('.rating-star').each(function(index) {
+            if (index < value) {
+                $(this).html('<i class="fas fa-star" style="color: #2182D7;"></i>');
+            } else {
+                $(this).html('<i class="far fa-star"></i>');
+            }
+        });
+    });
+    
+    // 영수증 사진 미리보기
+    $('#receipt_photo').change(function(e) {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#receiptImage').attr('src', e.target.result);
+                $('#receiptPreview').show();
+                $('#receiptUpload').hide();
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+    
+    // 저장 버튼 클릭 시 폼 제출
+    $('#saveButton').click(function() {
+        // 별점 체크
+        if ($('#rating').val() == 0) {
+            alert('전체 평점을 선택해주세요.');
+            return;
+        }
+        
+        $('#reviewForm').submit();
+    });
+    
+    // 라디오 버튼 스타일 변경
+    $('.rating-option-radio').change(function() {
+        let name = $(this).attr('name');
+        
+        // 같은 name의 라디오 버튼 스타일 초기화
+        $('input[name="' + name + '"]').each(function() {
+            $(this).next('label').css('color', 'rgba(0, 0, 0, 0.5)');
+        });
+        
+        // 선택된 라디오 버튼 스타일 변경
+        $(this).next('label').css('color', '#2182D7');
+    });
+});
+</script>
+{% endblock %}

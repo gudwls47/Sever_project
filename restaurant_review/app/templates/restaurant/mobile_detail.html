@@ -1,0 +1,79 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}{{ restaurant.name }} - 상세 정보{% endblock %}
+
+{% block back_button %}
+<div style="position: absolute; top: 35px; left: 20px; z-index: 10;">
+    <a href="{{ url_for('main.index') }}" style="color: #000;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 19L8 12L15 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- 가게 이미지 갤러리 -->
+<div class="restaurant-detail-images">
+    <div class="restaurant-main-image" style="background-image: url('{{ url_for('static', filename='images/restaurant-placeholder.jpg') }}'); background-size: cover; background-position: center;"></div>
+    <div class="restaurant-small-image" style="background-image: url('{{ url_for('static', filename='images/restaurant-placeholder.jpg') }}'); background-size: cover; background-position: center;"></div>
+    <div class="restaurant-small-image" style="background-image: url('{{ url_for('static', filename='images/restaurant-placeholder.jpg') }}'); background-size: cover; background-position: center;"></div>
+    <div class="restaurant-small-image" style="background-image: url('{{ url_for('static', filename='images/restaurant-placeholder.jpg') }}'); background-size: cover; background-position: center;"></div>
+    <div class="restaurant-small-image" style="background-image: url('{{ url_for('static', filename='images/restaurant-placeholder.jpg') }}'); background-size: cover; background-position: center;"></div>
+</div>
+
+<!-- 가게 정보 헤더 -->
+<div class="restaurant-detail-header">
+    <div class="restaurant-title">밀알 식당</div>
+    <div class="restaurant-category">한식</div>
+    <div class="restaurant-info">
+        <div class="open-status">영업 중</div>
+        <div class="star-icon"></div>
+        <div class="rating">4.83</div>
+        <div class="review-count">리뷰 595</div>
+    </div>
+</div>
+
+<!-- 액션 바 -->
+<div class="action-bar">
+    <div class="action-item">
+        <div class="action-icon" style="background-image: url('{{ url_for('static', filename='images/phone-icon.png') }}');"></div>
+        <div class="action-text">전화</div>
+    </div>
+    <div class="action-item">
+        <div class="action-icon" style="background-image: url('{{ url_for('static', filename='images/save-icon.png') }}');"></div>
+        <div class="action-text">저장</div>
+    </div>
+    <div class="action-item">
+        <div class="action-icon" style="background-image: url('{{ url_for('static', filename='images/directions-icon.png') }}');"></div>
+        <div class="action-text">길찾기</div>
+    </div>
+    <div class="action-item">
+        <div class="action-icon" style="background-image: url('{{ url_for('static', filename='images/share-icon.png') }}');"></div>
+        <div class="action-text">공유</div>
+    </div>
+</div>
+
+<!-- 탭 메뉴 -->
+<div class="tab-menu">
+    <div class="tab-item active">홈</div>
+    <div class="tab-item">소식</div>
+    <div class="tab-item">메뉴</div>
+    <div class="tab-item">리뷰</div>
+    <div class="tab-item">사진</div>
+    <div class="tab-item">주변</div>
+    <div class="tab-item">정보</div>
+</div>
+
+<!-- 가게 상세 정보 -->
+<div class="restaurant-detail-info" style="padding: 40px 20px;">
+    <p style="line-height: 1.5; color: #000;">
+        <strong>위치</strong> : {{ restaurant.address if restaurant else '서울특별시 동작구 상도로 369' }}<br><br>
+        <strong>영업 중</strong> : 11:00 - 21:00 (평일)<br><br>
+        <strong>오더 시간</strong> : 20:30까지<br><br>
+        <strong>전화번호</strong> : {{ restaurant.phone if restaurant else '02-123-4567' }}<br><br>
+        <strong>인스타 및 블로그</strong> : @restaurant_official<br><br>
+        <strong>단체 이용 가능</strong>, <strong>포장</strong>, <strong>예약</strong>, <strong>무선 인터넷</strong>
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}회원가입{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <h1 class="signup-title">회원가입</h1>
+    
+    <div class="terms-container">
+        <div class="terms-item">
+            <div class="terms-checkbox" id="allCheck"></div>
+            <label class="terms-text">약관 전체 동의하기</label>
+        </div>
+        
+        <div class="signup-line"></div>
+        
+        <div class="terms-item">
+            <div class="terms-checkbox checked" id="ageCheck"></div>
+            <label class="terms-text">(필수) 만14세 이상입니다.</label>
+        </div>
+        
+        <div class="terms-item">
+            <div class="terms-checkbox checked" id="termsCheck"></div>
+            <label class="terms-text">(필수) 이용약관 동의</label>
+            <span class="terms-view">약관보기</span>
+        </div>
+        
+        <div class="terms-item">
+            <div class="terms-checkbox" id="privacyCheck"></div>
+            <label class="terms-text">(필수) 개인정보 수집 및 이용 동의</label>
+            <span class="terms-view">약관보기</span>
+        </div>
+        
+        <div class="terms-item">
+            <div class="terms-checkbox" id="handleCheck"></div>
+            <label class="terms-text">(필수) 개인 정보 처리 방침</label>
+            <span class="terms-view">약관보기</span>
+        </div>
+        
+        <div class="terms-item">
+            <div class="terms-checkbox" id="thirdPartyCheck"></div>
+            <label class="terms-text">(필수) 개인정보 제3차 제공 동의</label>
+            <span class="terms-view">약관보기</span>
+        </div>
+        
+        <div class="terms-item">
+            <div class="terms-checkbox" id="pushCheck"></div>
+            <label class="terms-text">(선택) 앱 푸시 알림 설정 동의</label>
+            <span class="terms-view">약관보기</span>
+        </div>
+    </div>
+    
+    <button id="nextButton" class="signup-button">다음</button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // 체크박스 토글 함수
+    function toggleCheckbox(element) {
+        $(element).toggleClass('checked');
+    }
+    
+    // 전체 동의 처리
+    $('#allCheck').click(function() {
+        if ($(this).hasClass('checked')) {
+            $('.terms-checkbox').removeClass('checked');
+        } else {
+            $('.terms-checkbox').addClass('checked');
+        }
+    });
+    
+    // 개별 체크박스 클릭
+    $('.terms-checkbox:not(#allCheck)').click(function() {
+        toggleCheckbox(this);
+        
+        // 모든 필수 항목이 체크되었는지 확인
+        let allRequired = true;
+        $('.terms-item:has(label:contains("(필수)")) .terms-checkbox').each(function() {
+            if (!$(this).hasClass('checked')) {
+                allRequired = false;
+                return false;
+            }
+        });
+        
+        // 다음 버튼 활성화/비활성화
+        if (allRequired) {
+            $('#nextButton').prop('disabled', false).css('opacity', 1);
+        } else {
+            $('#nextButton').prop('disabled', true).css('opacity', 0.5);
+        }
+        
+        // 전체 동의 체크박스 상태 업데이트
+        let allChecked = true;
+        $('.terms-checkbox:not(#allCheck)').each(function() {
+            if (!$(this).hasClass('checked')) {
+                allChecked = false;
+                return false;
+            }
+        });
+        
+        if (allChecked) {
+            $('#allCheck').addClass('checked');
+        } else {
+            $('#allCheck').removeClass('checked');
+        }
+    });
+    
+    // 다음 버튼 클릭 시
+    $('#nextButton').click(function() {
+        // 모든 필수 항목이 체크되었는지 확인
+        let allRequired = true;
+        $('.terms-item:has(label:contains("(필수)")) .terms-checkbox').each(function() {
+            if (!$(this).hasClass('checked')) {
+                allRequired = false;
+                return false;
+            }
+        });
+        
+        if (allRequired) {
+            window.location.href = "{{ url_for('auth.register_step2') }}";
+        } else {
+            alert('필수 약관에 모두 동의해주세요.');
+        }
+    });
+    
+    // 초기 상태 설정
+    $('#nextButton').prop('disabled', true).css('opacity', 0.5);
+});
+</script>
+{% endblock %}

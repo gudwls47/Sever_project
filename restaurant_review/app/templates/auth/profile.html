@@ -1,0 +1,140 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}맛집 리뷰 랭킹 - 프로필 설정{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">나의 정보 수정</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-4 text-center mb-3 mb-md-0">
+                                <!-- 프로필 이미지 -->
+                                <div class="mb-3">
+                                    {% if current_user.profile_image %}
+                                        <img src="{{ current_user.profile_image }}" alt="프로필 이미지" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px;">
+                                            <i class="fas fa-user text-secondary" style="font-size: 64px;"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- 파일 업로드 -->
+                                <div class="mb-3">
+                                    {{ form.profile_image.label(class="form-label") }}
+                                    {{ form.profile_image(class="form-control") }}
+                                    {% if form.profile_image.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.profile_image.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-8">
+                                <!-- 기본 정보 -->
+                                <div class="mb-3">
+                                    {{ form.username.label(class="form-label") }}
+                                    {{ form.username(class="form-control") }}
+                                    {% if form.username.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.username.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <p class="form-label">이메일</p>
+                                    <p class="form-control bg-light">{{ current_user.email }}</p>
+                                    <small class="text-muted">이메일은 변경할 수 없습니다</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    {{ form.real_name.label(class="form-label") }}
+                                    {{ form.real_name(class="form-control") }}
+                                    {% if form.real_name.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.real_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    {{ form.phone_number.label(class="form-label") }}
+                                    {{ form.phone_number(class="form-control") }}
+                                    {% if form.phone_number.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.phone_number.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 자기소개 -->
+                        <div class="mb-3">
+                            {{ form.bio.label(class="form-label") }}
+                            {{ form.bio(class="form-control", rows=3) }}
+                            {% if form.bio.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.bio.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline-primary">비밀번호 변경</a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- 계정 통계 -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">내 활동 정보</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <h4>{{ current_user.reviews|length }}</h4>
+                            <p class="text-muted">리뷰</p>
+                        </div>
+                        <div class="col-4">
+                            <h4>{{ current_user.trust_score or 0 }}</h4>
+                            <p class="text-muted">온도</p>
+                        </div>
+                        <div class="col-4">
+                            {% set like_count = 0 %}
+                            {% for review in current_user.reviews %}
+                                {% set like_count = like_count + review.likes|length %}
+                            {% endfor %}
+                            <h4>{{ like_count }}</h4>
+                            <p class="text-muted">받은 좋아요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

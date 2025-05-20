@@ -1,0 +1,110 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}리뷰 상세{% endblock %}
+
+{% block content %}
+<div style="padding: 20px;">
+    <!-- 레스토랑 정보 카드 -->
+    <div class="restaurant-review-card">
+        <div class="review-restaurant-info">
+            <h3 class="review-restaurant-name">{{ review.restaurant.name }}</h3>
+            <span class="review-restaurant-category">{{ review.restaurant.category }}</span>
+        </div>
+        
+        <div style="display: flex; align-items: center; margin-top: 5px;">
+            <div style="margin-right: 15px;">
+                <div style="font-size: 10px; color: rgba(0, 0, 0, 0.7);">영업 중</div>
+            </div>
+            
+            <div class="review-rating">
+                <div class="review-rating-star"></div>
+                <div class="review-rating-score">{{ review.restaurant.average_rating|round(2) }}</div>
+                <div class="review-rating-count">리뷰 {{ review.restaurant.reviews|length }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 리뷰어 평점 섹션 -->
+    <div style="margin: 30px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div class="review-rating-label">평점</div>
+            <div class="review-rating-stars">
+                {% for i in range(review.rating) %}
+                <div class="review-rating-star" style="background: #2182D7;"></div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div style="display: flex; margin-bottom: 10px;">
+            <div class="review-rating-label" style="width: 60px;">맛</div>
+            <div class="review-attribute">
+                {% if review.detail.taste_rating == 1 %}
+                <span class="review-attribute-label neutral">맛없음</span>
+                {% elif review.detail.taste_rating == 2 %}
+                <span class="review-attribute-label neutral">보통</span>
+                {% else %}
+                <span class="review-attribute-label">맛있음</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div style="display: flex; margin-bottom: 10px;">
+            <div class="review-rating-label" style="width: 60px;">가격</div>
+            <div class="review-attribute">
+                {% if review.detail.price_rating == 1 %}
+                <span class="review-attribute-label neutral">비쌈</span>
+                {% elif review.detail.price_rating == 2 %}
+                <span class="review-attribute-label neutral">보통</span>
+                {% else %}
+                <span class="review-attribute-label">쌈</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div style="display: flex; margin-bottom: 10px;">
+            <div class="review-rating-label" style="width: 60px;">응대</div>
+            <div class="review-attribute">
+                {% if review.detail.service_rating == 1 %}
+                <span class="review-attribute-label neutral">불친절함</span>
+                {% elif review.detail.service_rating == 2 %}
+                <span class="review-attribute-label neutral">보통</span>
+                {% else %}
+                <span class="review-attribute-label">친절함</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- 리뷰 사진 섹션 -->
+    {% if review.images %}
+    <div class="review-photos">
+        <div class="review-photos-title">리뷰어가 찍은 사진</div>
+        <div class="review-photo-grid">
+            {% for image in review.images %}
+            <div class="review-photo">
+                <img src="{{ image.image_url }}" alt="리뷰 사진" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- 리뷰 내용 -->
+    <div class="review-content">
+        {{ review.content }}
+    </div>
+    
+    <!-- 리뷰어 정보 -->
+    <div style="margin-top: 40px; display: flex; align-items: center;">
+        <img src="{% if review.author.profile_image %}{{ review.author.profile_image }}{% else %}{{ url_for('static', filename='images/profile-placeholder.jpg') }}{% endif %}" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+        <div>
+            <div style="font-weight: 600;">{{ review.author.username }}</div>
+            <div style="font-size: 10px; color: rgba(0, 0, 0, 0.7);">{{ review.created_at.strftime('%Y-%m-%d') }}</div>
+        </div>
+        
+        <a href="{{ url_for('review.reviewer', user_id=review.author.user_id) }}" style="margin-left: auto; color: #2182D7; text-decoration: none;">
+            리뷰어 페이지
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,604 @@
+{% extends 'layouts/base.html' %} {% block title %}{{ restaurant.name }} - 맛집
+상세 정보{% endblock %} {% block content %}
+<div class="container">
+  <!-- 맛집 기본 정보 -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="mb-2">{{ restaurant.name }}</h1>
+      <div class="d-flex align-items-center mb-3">
+        <span class="badge bg-primary me-2">{{ restaurant.category }}</span>
+        <div class="text-warning me-2">
+          {% for i in range(5) %} {% if i < restaurant.average_rating|int %}
+          <i class="fas fa-star"></i>
+          {% elif i < restaurant.average_rating|round(0, 'ceil')|int and
+          (restaurant.average_rating - i)|round(1) >= 0.5 %}
+          <i class="fas fa-star-half-alt"></i>
+          {% else %}
+          <i class="far fa-star"></i>
+          {% endif %} {% endfor %}
+        </div>
+        <span class="text-muted">{{ restaurant.average_rating|round(1) }}</span>
+        <span class="ms-2 text-muted">({{ rating_stats.count }}개의 리뷰)</span>
+      </div>
+      <p class="mb-2">
+        <i class="fas fa-map-marker-alt me-2"></i> {{ restaurant.address }}
+      </p>
+      {% if restaurant.phone %}
+      <p class="mb-2">
+        <i class="fas fa-phone me-2"></i> {{ restaurant.phone }}
+      </p>
+      {% endif %}
+
+      <!-- 태그 목록 -->
+      {% if tags %}
+      <div class="mb-3">
+        {% for tag in tags %}
+        <span class="badge bg-secondary me-1">{{ tag.name }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- 액션 버튼 -->
+      <div class="d-flex mb-3">
+        <a
+          href="tel:{{ restaurant.phone }}"
+          class="btn btn-outline-primary me-2"
+        >
+          <i class="fas fa-phone"></i> 전화
+        </a>
+        <a
+          href="https://map.kakao.com/link/search/{{ restaurant.address }}"
+          target="_blank"
+          class="btn btn-outline-success me-2"
+        >
+          <i class="fas fa-map-marked-alt"></i> 길찾기
+        </a>
+        <a
+          href="{{ url_for('review.create', restaurant_id=restaurant.restaurant_id) }}"
+          class="btn btn-primary"
+        >
+          <i class="fas fa-edit"></i> 리뷰 작성
+        </a>
+
+        {% if current_user.is_authenticated and current_user.user_type ==
+        'admin' %}
+        <a
+          href="{{ url_for('restaurant.edit', restaurant_id=restaurant.restaurant_id) }}"
+          class="btn btn-outline-secondary ms-2"
+        >
+          <i class="fas fa-cog"></i> 정보 수정
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <!-- 별점 분포 시각화 -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">별점 분포</h5>
+        </div>
+        <div class="card-body">
+          {% for i in range(5, 0, -1) %}
+          <div class="d-flex align-items-center mb-2">
+            <div class="me-2 text-warning" style="width: 70px">
+              {% for j in range(i) %}
+              <i class="fas fa-star"></i>
+              {% endfor %}
+            </div>
+            <div class="progress flex-grow-1" style="height: 10px">
+              {% set percentage = (rating_stats.distribution[i] /
+              rating_stats.count * 100) if rating_stats.count > 0 else 0 %}
+              <div
+                class="progress-bar bg-warning"
+                role="progressbar"
+                style="width: {{ percentage }}%;"
+                aria-valuenow="{{ percentage }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
+            </div>
+            <span class="ms-2 text-muted small"
+              >{{ rating_stats.distribution[i] }}</span
+            >
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- 항목별 평가 -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h5 class="mb-0">항목별 평가</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>맛</span>
+              <span>{{ taste_avg|round(1) }}/3.0</span>
+            </div>
+            <div class="progress" style="height: 10px">
+              <div
+                class="progress-bar bg-success"
+                role="progressbar"
+                style="width: {{ (taste_avg / 3 * 100)|round }}%;"
+                aria-valuenow="{{ taste_avg }}"
+                aria-valuemin="0"
+                aria-valuemax="3"
+              ></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>가격</span>
+              <span>{{ price_avg|round(1) }}/3.0</span>
+            </div>
+            <div class="progress" style="height: 10px">
+              <div
+                class="progress-bar bg-info"
+                role="progressbar"
+                style="width: {{ (price_avg / 3 * 100)|round }}%;"
+                aria-valuenow="{{ price_avg }}"
+                aria-valuemin="0"
+                aria-valuemax="3"
+              ></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="d-flex justify-content-between mb-1">
+              <span>응대</span>
+              <span>{{ service_avg|round(1) }}/3.0</span>
+            </div>
+            <div class="progress" style="height: 10px">
+              <div
+                class="progress-bar bg-primary"
+                role="progressbar"
+                style="width: {{ (service_avg / 3 * 100)|round }}%;"
+                aria-valuenow="{{ service_avg }}"
+                aria-valuemin="0"
+                aria-valuemax="3"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 탭 메뉴 -->
+  <ul class="nav nav-tabs mb-4" id="restaurantTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="reviews-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#reviews"
+        type="button"
+        role="tab"
+        aria-controls="reviews"
+        aria-selected="true"
+      >
+        리뷰 ({{ reviews|length }})
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="map-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#map"
+        type="button"
+        role="tab"
+        aria-controls="map"
+        aria-selected="false"
+      >
+        위치 정보
+      </button>
+    </li>
+  </ul>
+
+  <!-- 탭 컨텐츠 -->
+  <div class="tab-content" id="restaurantTabsContent">
+    <!-- 리뷰 탭 -->
+    <div
+      class="tab-pane fade show active"
+      id="reviews"
+      role="tabpanel"
+      aria-labelledby="reviews-tab"
+    >
+      {% if reviews %}
+      <div class="mb-4">
+        <a
+          href="{{ url_for('review.create', restaurant_id=restaurant.restaurant_id) }}"
+          class="btn btn-primary"
+        >
+          <i class="fas fa-edit"></i> 리뷰 작성하기
+        </a>
+      </div>
+
+      {% for review in reviews %}
+      <div class="card mb-4">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              {% if review.author.profile_image %}
+              <img
+                src="{{ review.author.profile_image }}"
+                alt="{{ review.author.username }}"
+                class="rounded-circle"
+                width="40"
+                height="40"
+              />
+              {% else %}
+              <div
+                class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px"
+              >
+                <i class="fas fa-user text-secondary"></i>
+              </div>
+              {% endif %}
+            </div>
+            <div>
+              <h6 class="mb-0">
+                <a
+                  href="{{ url_for('review.reviewer', user_id=review.author.user_id) }}"
+                  class="text-decoration-none"
+                >
+                  {{ review.author.username }}
+                </a>
+              </h6>
+              <div class="d-flex align-items-center">
+                <small class="text-muted"
+                  >{{ review.created_at.strftime('%Y-%m-%d') }}</small
+                >
+                {% if review.receipt_verified %}
+                <span class="badge bg-success ms-1">인증</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="text-warning">
+            {% for i in range(review.rating) %}
+            <i class="fas fa-star"></i>
+            {% endfor %} {% for i in range(5 - review.rating) %}
+            <i class="far fa-star"></i>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- 항목별 평가 뱃지 -->
+          {% if review.details %}
+          <div class="mb-3">
+            <span
+              class="badge {% if review.details.taste_rating == 3 %}bg-success{% elif review.details.taste_rating == 2 %}bg-warning{% else %}bg-danger{% endif %} me-2"
+            >
+              맛: {{ ['맛없음', '보통', '맛있음'][review.details.taste_rating -
+              1] }}
+            </span>
+
+            <span
+              class="badge {% if review.details.price_rating == 3 %}bg-success{% elif review.details.price_rating == 2 %}bg-warning{% else %}bg-danger{% endif %} me-2"
+            >
+              가격: {{ ['비쌈', '보통', '쌈'][review.details.price_rating - 1]
+              }}
+            </span>
+
+            <span
+              class="badge {% if review.details.service_rating == 3 %}bg-success{% elif review.details.service_rating == 2 %}bg-warning{% else %}bg-danger{% endif %}"
+            >
+              응대: {{ ['불친절함', '보통',
+              '친절함'][review.details.service_rating - 1] }}
+            </span>
+          </div>
+          {% endif %}
+
+          <!-- 리뷰 내용 -->
+          <p class="card-text">{{ review.content }}</p>
+
+          <!-- 리뷰 이미지 -->
+          {% if review.images %}
+          <div class="review-images mb-3">
+            <div class="row">
+              {% for image in review.images %}
+              <div class="col-md-3 col-6 mb-2">
+                <a
+                  href="{{ image.image_url }}"
+                  data-lightbox="review-{{ review.review_id }}"
+                  data-title="{{ review.author.username }}의 리뷰 이미지"
+                >
+                  <img
+                    src="{{ image.image_url }}"
+                    alt="리뷰 이미지"
+                    class="img-thumbnail"
+                    style="width: 100%; height: 150px; object-fit: cover"
+                  />
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- 리뷰 액션 (좋아요, 수정, 삭제) -->
+          <div class="d-flex justify-content-between">
+            <div>
+              <!-- 좋아요 버튼 -->
+              {% if current_user.is_authenticated and current_user.user_id !=
+              review.author.user_id %}
+              <button
+                class="btn btn-sm btn-outline-primary like-button"
+                data-review-id="{{ review.review_id }}"
+                data-liked="{% if review.user_id in current_user.likes|map(attribute='review_id') %}true{% else %}false{% endif %}"
+              >
+                <i
+                  class="{% if review.user_id in current_user.likes|map(attribute='review_id') %}fas{% else %}far{% endif %} fa-thumbs-up"
+                ></i>
+                <span class="like-count">{{ review.likes|length }}</span>
+              </button>
+              {% else %}
+              <button class="btn btn-sm btn-outline-secondary" disabled>
+                <i class="far fa-thumbs-up"></i>
+                <span>{{ review.likes|length }}</span>
+              </button>
+              {% endif %}
+            </div>
+
+            <!-- 수정/삭제 버튼 (본인만 표시) -->
+            {% if current_user.is_authenticated and current_user.user_id ==
+            review.author.user_id %}
+            <div>
+              <a
+                href="{{ url_for('review.edit', review_id=review.review_id) }}"
+                class="btn btn-sm btn-outline-secondary me-1"
+              >
+                <i class="fas fa-edit"></i> 수정
+              </a>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteReviewModal{{ review.review_id }}"
+              >
+                <i class="fas fa-trash"></i> 삭제
+              </button>
+
+              <!-- 삭제 확인 모달 -->
+              <div
+                class="modal fade"
+                id="deleteReviewModal{{ review.review_id }}"
+                tabindex="-1"
+                aria-labelledby="deleteReviewModalLabel{{ review.review_id }}"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5
+                        class="modal-title"
+                        id="deleteReviewModalLabel{{ review.review_id }}"
+                      >
+                        리뷰 삭제 확인
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>
+                        정말로 이 리뷰를 삭제하시겠습니까? 이 작업은 되돌릴 수
+                        없습니다.
+                      </p>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        취소
+                      </button>
+                      <form
+                        action="{{ url_for('review.delete', review_id=review.review_id) }}"
+                        method="POST"
+                      >
+                        <input
+                          type="hidden"
+                          name="csrf_token"
+                          value="{{ csrf_token() }}"
+                        />
+                        <button type="submit" class="btn btn-danger">
+                          삭제
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %} {% else %}
+      <div class="text-center py-5">
+        <h4 class="mb-3">아직 리뷰가 없습니다</h4>
+        <p class="text-muted mb-4">이 맛집의 첫 번째 리뷰를 작성해보세요!</p>
+        <a
+          href="{{ url_for('review.create', restaurant_id=restaurant.restaurant_id) }}"
+          class="btn btn-primary"
+        >
+          <i class="fas fa-edit"></i> 리뷰 작성하기
+        </a>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 위치 정보 탭 -->
+    <div
+      class="tab-pane fade"
+      id="map"
+      role="tabpanel"
+      aria-labelledby="map-tab"
+    >
+      <div class="row">
+        <div class="col-md-8">
+          <!-- 지도 표시 영역 -->
+          <div id="restaurantMap" style="width: 100%; height: 400px"></div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">위치 정보</h5>
+            </div>
+            <div class="card-body">
+              <p>
+                <i class="fas fa-map-marker-alt me-2"></i> {{ restaurant.address
+                }}
+              </p>
+              {% if restaurant.phone %}
+              <p><i class="fas fa-phone me-2"></i> {{ restaurant.phone }}</p>
+              {% endif %}
+              <a
+                href="https://map.kakao.com/link/search/{{ restaurant.address }}"
+                target="_blank"
+                class="btn btn-primary"
+              >
+                <i class="fas fa-location-arrow me-1"></i> 길찾기
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css"
+/>
+{% endblock %} {% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+<script
+  type="text/javascript"
+  src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_MAP_API_KEY&libraries=services"
+></script>
+<script>
+  // 카카오 지도 API 초기화
+  document.addEventListener('DOMContentLoaded', function() {
+      // 지도 탭이 활성화될 때만 지도 초기화
+      document.getElementById('map-tab').addEventListener('shown.bs.tab', function() {
+          initMap();
+      });
+
+      // 좋아요 버튼 클릭 이벤트
+      document.querySelectorAll('.like-button').forEach(button => {
+          button.addEventListener('click', function() {
+              const reviewId = this.getAttribute('data-review-id');
+              const isLiked = this.getAttribute('data-liked') === 'true';
+              const likeCount = this.querySelector('.like-count');
+              const likeIcon = this.querySelector('i');
+
+              fetch(`/review/like/${reviewId}`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+                  },
+                  credentials: 'same-origin'
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      if (data.liked) {
+                          likeIcon.classList.remove('far');
+                          likeIcon.classList.add('fas');
+                          likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                          this.setAttribute('data-liked', 'true');
+                      } else {
+                          likeIcon.classList.remove('fas');
+                          likeIcon.classList.add('far');
+                          likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                          this.setAttribute('data-liked', 'false');
+                      }
+                  } else {
+                      alert(data.message || '좋아요 처리 중 오류가 발생했습니다.');
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  alert('요청 처리 중 오류가 발생했습니다.');
+              });
+          });
+      });
+  });
+
+  // 카카오 지도 초기화 함수
+  function initMap() {
+      const mapContainer = document.getElementById('restaurantMap');
+      const restaurantAddress = '{{ restaurant.address }}';
+      const restaurantName = '{{ restaurant.name }}';
+
+      {% if restaurant.latitude and restaurant.longitude %}
+          // 좌표가 DB에 저장되어 있는 경우
+          const mapOption = {
+              center: new kakao.maps.LatLng({{ restaurant.latitude }}, {{ restaurant.longitude }}),
+              level: 3
+          };
+
+          const map = new kakao.maps.Map(mapContainer, mapOption);
+
+          // 마커 생성
+          const marker = new kakao.maps.Marker({
+              position: new kakao.maps.LatLng({{ restaurant.latitude }}, {{ restaurant.longitude }}),
+              map: map
+          });
+
+          // 인포윈도우 생성
+          const infowindow = new kakao.maps.InfoWindow({
+              content: `<div style="padding:5px;text-align:center;font-weight:bold;">${restaurantName}</div>`
+          });
+
+          infowindow.open(map, marker);
+      {% else %}
+          // 주소로 좌표 검색
+          const mapOption = {
+              center: new kakao.maps.LatLng(37.566826, 126.9786567),
+              level: 3
+          };
+
+          const map = new kakao.maps.Map(mapContainer, mapOption);
+          const geocoder = new kakao.maps.services.Geocoder();
+
+          geocoder.addressSearch(restaurantAddress, function(result, status) {
+              if (status === kakao.maps.services.Status.OK) {
+                  const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                  // 마커 생성
+                  const marker = new kakao.maps.Marker({
+                      position: coords,
+                      map: map
+                  });
+
+                  // 인포윈도우 생성
+                  const infowindow = new kakao.maps.InfoWindow({
+                      content: `<div style="padding:5px;text-align:center;font-weight:bold;">${restaurantName}</div>`
+                  });
+
+                  infowindow.open(map, marker);
+
+                  // 지도 중심 이동
+                  map.setCenter(coords);
+              }
+          });
+      {% endif %}
+  }
+</script>
+{% endblock %}

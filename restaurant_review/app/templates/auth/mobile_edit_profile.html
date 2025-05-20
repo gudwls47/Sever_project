@@ -1,0 +1,101 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}정보 수정{% endblock %}
+
+{% block content %}
+<div class="edit-profile-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+        <div style="width: 34px;">
+            <a href="{{ url_for('auth.profile') }}" style="color: #000000;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+        <h1 class="edit-profile-title">나의 정보 수정</h1>
+        <div class="edit-profile-save" id="saveButton">
+            저장
+        </div>
+    </div>
+    
+    <form method="POST" action="{{ url_for('auth.edit_profile') }}" enctype="multipart/form-data" id="profileForm">
+        {{ form.csrf_token }}
+        
+        <div style="display: flex; flex-direction: column; align-items: center; margin: 30px 0;">
+            <div class="edit-profile-avatar-container">
+                <img src="{% if current_user.profile_image %}{{ current_user.profile_image }}{% else %}{{ url_for('static', filename='images/profile-placeholder.jpg') }}{% endif %}" class="edit-profile-avatar" alt="프로필 이미지">
+                <label for="profile_image" class="edit-profile-avatar-edit">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" name="profile_image" id="profile_image" style="display: none;">
+            </div>
+            
+            <div class="edit-profile-username">
+                {{ current_user.username }}
+                <a href="#" class="edit-profile-username-edit">
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div style="padding: 0 20px;">
+            <div class="edit-profile-bio">
+                <label class="edit-profile-bio-label">자기소개</label>
+                <textarea class="edit-profile-bio-input" name="bio" placeholder="나를 한 줄로 표현해보세요">{{ current_user.bio or '' }}</textarea>
+            </div>
+            
+            <hr style="margin: 20px 0; border: 1px solid #838383;">
+            
+            <div class="edit-profile-info">
+                <h3 style="margin-bottom: 20px;">회원정보</h3>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div class="edit-profile-info-label">고객명</div>
+                    <div class="edit-profile-info-value">{{ current_user.real_name }}</div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div class="edit-profile-info-label">휴대폰번호</div>
+                    <div class="edit-profile-info-value">{{ current_user.phone_number or '미등록' }}</div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div class="edit-profile-info-label">이메일</div>
+                    <div class="edit-profile-info-value">{{ current_user.email }}</div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div class="edit-profile-info-label">비밀번호</div>
+                    <div class="edit-profile-info-value">
+                        <a href="{{ url_for('auth.change_password') }}" style="color: #000000; text-decoration: none;">변경하기 ></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <a href="{{ url_for('auth.logout') }}" class="edit-profile-logout-button">
+            로그아웃
+        </a>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // 프로필 이미지 미리보기
+    $('#profile_image').change(function(e) {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('.edit-profile-avatar').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+    
+    // 저장 버튼 클릭 시 폼 제출
+    $('#saveButton').click(function() {
+        $('#profileForm').submit();
+    });
+});
+</script>
+{% endblock %}

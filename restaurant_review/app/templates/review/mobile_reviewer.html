@@ -1,0 +1,147 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}리뷰어 프로필{% endblock %}
+
+{% block content %}
+<div style="padding: 20px;">
+    <!-- 리뷰어 정보 -->
+    <div class="reviewer-profile-header">
+        <h1 class="reviewer-profile-name">{{ reviewer.username }}</h1>
+        
+        <img src="{% if reviewer.profile_image %}{{ reviewer.profile_image }}{% else %}{{ url_for('static', filename='images/profile-placeholder.jpg') }}{% endif %}" class="reviewer-profile-avatar" alt="리뷰어 프로필">
+        
+        <div class="reviewer-profile-stats">
+            <div class="reviewer-profile-stat">
+                <div class="reviewer-profile-stat-label">리뷰 온도</div>
+                <div class="reviewer-profile-stat-value">{{ reviewer.trust_score or 0 }}도</div>
+            </div>
+            
+            <div class="reviewer-profile-stat">
+                <div class="reviewer-profile-stat-label">리뷰 갯수</div>
+                <div class="reviewer-profile-stat-value">{{ reviewer_reviews|length }}개</div>
+            </div>
+        </div>
+        
+        <!-- 온도 스케일 -->
+        <div class="reviewer-profile-temperature-scale">
+            <div class="temperature-point">
+                <div class="temperature-dot"></div>
+                <div class="temperature-value">0%</div>
+            </div>
+            <div class="temperature-line"></div>
+            <div class="temperature-point">
+                <div class="temperature-dot"></div>
+                <div class="temperature-value">25%</div>
+            </div>
+            <div class="temperature-line"></div>
+            <div class="temperature-point">
+                <div class="temperature-dot"></div>
+                <div class="temperature-value">50%</div>
+            </div>
+            <div class="temperature-line"></div>
+            <div class="temperature-point">
+                <div class="temperature-dot"></div>
+                <div class="temperature-value">75%</div>
+            </div>
+            <div class="temperature-line"></div>
+            <div class="temperature-point">
+                <div class="temperature-dot {% if reviewer.trust_score > 75 %}active{% endif %}"></div>
+                <div class="temperature-value">100%</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 리뷰 목록 -->
+    <div style="margin-top: 30px;">
+        <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 20px;">작성한 리뷰</h2>
+        
+        {% if reviewer_reviews %}
+            {% for review in reviewer_reviews %}
+            <div class="restaurant-review-card" style="cursor: pointer;" onclick="location.href='{{ url_for('review.detail', review_id=review.review_id) }}'">
+                <div class="review-restaurant-info">
+                    <h3 class="review-restaurant-name">{{ review.restaurant.name }}</h3>
+                    <div style="display: flex; align-items: center; margin-top: 5px;">
+                        {% for i in range(review.rating) %}
+                        <i class="fas fa-star" style="color: #2182D7; font-size: 14px; margin-right: 2px;"></i>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="review-content" style="margin-top: 10px; font-size: 10px;">
+                    {% if review.content|length > 50 %}
+                    {{ review.content[:50] }}...
+                    {% else %}
+                    {{ review.content }}
+                    {% endif %}
+                </div>
+                
+                {% if review.images %}
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 10px;">
+                    {% for image in review.images[:4] %}
+                    <div style="width: 32px; height: 32px; overflow: hidden;">
+                        <img src="{{ image.image_url }}" alt="리뷰 사진" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div style="text-align: right; font-size: 8px; color: rgba(0, 0, 0, 0.7); margin-top: 5px;">
+                    ... 더보기
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <p style="text-align: center; margin: 50px 0; color: rgba(0, 0, 0, 0.5);">아직 작성한 리뷰가 없습니다.</p>
+        {% endif %}
+    </div>
+    
+    <!-- 온도 평가 섹션 -->
+    {% if reviewer.user_id != current_user.user_id %}
+    <div style="margin-top: 40px; border-top: 1px solid #D9D9D9; padding-top: 20px;">
+        <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 20px;">리뷰어 온도 평가하기</h2>
+        
+        <form method="POST" action="{{ url_for('review.rate_reviewer', user_id=reviewer.user_id) }}" id="rateForm">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>0°C</span>
+                    <span>100°C</span>
+                </div>
+                
+                <input type="range" name="trust_score" min="0" max="100" value="{{ current_rating or 50 }}" style="width: 100%;" id="temperatureSlider">
+                
+                <div style="margin-top: 10px; font-size: 18px; font-weight: 600;" id="temperatureValue">
+                    {{ current_rating or 50 }}°C
+                </div>
+                
+                <button type="submit" style="margin-top: 20px; padding: 10px 30px; background: #9BDDE2; border: 1px solid rgba(0, 0, 0, 0.3); border-radius: 15px; font-size: 14px; cursor: pointer;">
+                    평가하기
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // 온도계 활성화
+    const score = {{ reviewer.trust_score or 0 }};
+    const percentage = score;
+    
+    // 온도에 따라 도트 활성화
+    $('.temperature-point').each(function(index) {
+        const dotPercentage = index * 25;
+        if (percentage >= dotPercentage) {
+            $(this).find('.temperature-dot').addClass('active');
+        }
+    });
+    
+    // 온도 슬라이더 값 변경 이벤트
+    $('#temperatureSlider').on('input', function() {
+        $('#temperatureValue').text($(this).val() + '°C');
+    });
+});
+</script>
+{% endblock %}

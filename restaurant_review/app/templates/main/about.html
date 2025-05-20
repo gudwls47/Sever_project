@@ -1,0 +1,145 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}맛집 리뷰 랭킹 - 서비스 소개{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="mb-4 text-center">맛집 리뷰 랭킹 서비스 소개</h2>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">프로젝트 목표</h5>
+                    <p class="card-text">
+                        단순한 맛집 정보 제공이 아닌, 리뷰를 작성하는 '리뷰어'의 신뢰도와 활동을 중심으로
+                        맛집 정보를 탐색하고 공유하는 리뷰어 중심의 맛집 리뷰 플랫폼입니다.
+                    </p>
+                    
+                    <h5 class="mt-4">핵심 개념: "리뷰어 중심"</h5>
+                    <ul>
+                        <li>리뷰는 단순 정보가 아닌 리뷰어의 신뢰성과 활동 내역으로 가치 판단</li>
+                        <li>리뷰어 온도 시스템을 통해 사용자들이 리뷰어를 직접 평가</li>
+                        <li>사용자들은 신뢰할 수 있는 리뷰어의 리뷰를 기준으로 맛집 선택 가능</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-4">주요 기능</h3>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">회원 관리 기능</h5>
+                            <ul class="card-text">
+                                <li>회원가입 / 로그인 / 로그아웃</li>
+                                <li>사용자 정보 수정, 프로필 이미지 업로드</li>
+                                <li>일반 사용자와 식당 사장님 역할 구분</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">맛집 검색 및 필터링</h5>
+                            <ul class="card-text">
+                                <li>지역, 음식종류, 키워드 기반 맛집 검색</li>
+                                <li>평점순 / 리뷰순 정렬</li>
+                                <li>지도 기반 검색 및 정보 표시</li>
+                                <li>상세 정보 제공 (메뉴, 가격, 위치 등)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">리뷰 및 평가 시스템</h5>
+                            <ul class="card-text">
+                                <li>항목별 평가 (맛, 가격, 응대 등)</li>
+                                <li>영수증 사진 업로드로 인증 리뷰 시스템</li>
+                                <li>리뷰어 온도 시스템 (신뢰도 평가)</li>
+                                <li>리뷰 통계 및 데이터 분석</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-4">리뷰어 온도 시스템</h3>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">온도 산정 방식</h5>
+                    <p class="card-text">
+                        리뷰어 온도는 다음과 같은 요소를 고려하여 계산됩니다:
+                    </p>
+                    <ul>
+                        <li>작성한 리뷰 수 (최대 30점)</li>
+                        <li>영수증 인증 비율 (최대 40점)</li>
+                        <li>다른 사용자들의 좋아요 수 (최대 30점)</li>
+                    </ul>
+                    
+                    <p class="card-text">
+                        온도는 0도부터 100도까지 측정되며, 온도가 높을수록 신뢰할 수 있는 리뷰어입니다.
+                    </p>
+                    
+                    <div class="temperature-example mt-4 mb-4">
+                        <h6>온도 예시:</h6>
+                        <div class="d-flex align-items-center mt-2 mb-3">
+                            <span class="me-2">10°C</span>
+                            <div class="temperature-gauge me-2" style="--temp: 10%;">
+                                <div class="gauge-fill"></div>
+                            </div>
+                            <span class="text-muted">낮은 신뢰도</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="me-2">50°C</span>
+                            <div class="temperature-gauge me-2" style="--temp: 50%;">
+                                <div class="gauge-fill"></div>
+                            </div>
+                            <span class="text-muted">보통 신뢰도</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">90°C</span>
+                            <div class="temperature-gauge me-2" style="--temp: 90%;">
+                                <div class="gauge-fill"></div>
+                            </div>
+                            <span class="text-muted">높은 신뢰도</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12 text-center">
+            <h3 class="mb-4">시작하기</h3>
+            <p class="mb-4">지금 바로 맛집 리뷰 랭킹 서비스를 이용해보세요!</p>
+            
+            <div class="d-flex justify-content-center">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('restaurant.index') }}" class="btn btn-primary me-3">맛집 탐색하기</a>
+                <a href="{{ url_for('review.reviewer', user_id=current_user.user_id) }}" class="btn btn-outline-primary">내 리뷰 관리하기</a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary me-3">회원가입</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">로그인</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

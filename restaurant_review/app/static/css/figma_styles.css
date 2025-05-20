@@ -1,0 +1,1272 @@
+/* Figma 스타일 CSS - 맛집 리뷰 애플리케이션 */
+
+/* 공통 스타일 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', 'Noto Sans KR', 'Poppins', 'Inter', sans-serif;
+  color: #000000;
+  background-color: #FFFFFF;
+  margin: 0;
+  padding: 0;
+}
+
+/* 상태 표시줄 */
+.statusbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 8px 19px;
+  gap: 286px;
+  width: 100%;
+  height: 27px;
+  backdrop-filter: blur(2px);
+}
+
+.time {
+  margin: 0 auto;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: #000000;
+}
+
+.right-icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 0px;
+  gap: 3px;
+  margin: 0 auto;
+}
+
+/* 메인 페이지 스타일 */
+.main-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  background: #FFFFFF;
+  border: 1px solid #000000;
+}
+
+/* 검색 바 */
+.search-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 4px 2px 24px;
+  gap: 10px;
+  width: 287px;
+  height: 40px;
+  background: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 100px;
+  margin: 15px auto;
+}
+
+.search-input {
+  width: 123px;
+  height: 12px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  color: #000000;
+  border: none;
+  outline: none;
+}
+
+.search-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 10px;
+  gap: 10px;
+  width: 48px;
+  height: 32px;
+  background: #000000;
+  border-radius: 18px;
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+}
+
+/* 식당 이미지 */
+.restaurant-image {
+  width: 100%;
+  height: 199px;
+  object-fit: cover;
+}
+
+.restaurant-info-overlay {
+  position: absolute;
+  width: 100%;
+  height: 63px;
+  left: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+
+.restaurant-name {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.restaurant-address {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #FFFFFF;
+  margin-top: 5px;
+}
+
+/* 슬라이더 인디케이터 */
+.slider-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.slider-indicator {
+  width: 6px;
+  height: 6px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  margin: 0 5px;
+}
+
+.slider-indicator.active {
+  background: #F2B12F;
+}
+
+/* 탭 섹션 */
+.tabs-section {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.tab {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 100%;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  padding-bottom: 5px;
+}
+
+.tab.active {
+  font-weight: 600;
+  color: #000000;
+  position: relative;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 19px;
+  height: 4px;
+  background: rgba(26, 154, 164, 0.7);
+}
+
+/* 리뷰어 랭킹 */
+.reviewer-card {
+  box-sizing: border-box;
+  width: 292px;
+  height: 53px;
+  background: #CFFCFF;
+  border: 0.5px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  margin: 15px auto;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.reviewer-avatar {
+  width: 40.62px;
+  height: 43.23px;
+  border: 1px solid #FFFFFF;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.reviewer-info {
+  flex: 1;
+}
+
+.reviewer-rank {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 100%;
+  color: #FF0000;
+}
+
+.reviewer-name {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 100%;
+  text-align: center;
+  color: #000000;
+  margin-top: 5px;
+}
+
+.reviewer-temperature {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.temperature-label {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 100%;
+  text-align: center;
+  color: #000000;
+  margin-right: 10px;
+}
+
+.temperature-value {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 100%;
+  text-align: center;
+  color: #FF0000;
+}
+
+.temperature-bar {
+  width: 66px;
+  height: 5px;
+  background: #FFFFFF;
+  border-radius: 100px;
+  margin-top: 5px;
+}
+
+.temperature-fill {
+  height: 100%;
+  background: #FF0000;
+  border-radius: 100px;
+}
+
+/* 하단 네비게이션 바 */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 400px;
+  height: 87px;
+  background: #FFFFFF;
+  border-top: 1px solid #D9D9D9;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav-icon {
+  width: 24.73px;
+  height: 27.2px;
+}
+
+.nav-text {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  text-align: center;
+  color: #C6C8C8;
+  margin-top: 5px;
+}
+
+.nav-item.active .nav-icon {
+  border: 2px solid #F2B12F;
+}
+
+.nav-item.active .nav-text {
+  color: #FFBD38;
+}
+
+/* 가게 상세 페이지 스타일 */
+.restaurant-detail-image {
+  width: 162px;
+  height: 184px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.restaurant-detail-small-image {
+  width: 79px;
+  height: 90px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.restaurant-detail-name {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 100%;
+  text-align: center;
+  color: #000000;
+}
+
+.restaurant-detail-category {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 100%;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.restaurant-detail-rating {
+  display: flex;
+  align-items: center;
+}
+
+.restaurant-detail-status {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 100%;
+  color: #000000;
+}
+
+.restaurant-detail-star {
+  width: 17px;
+  height: 17px;
+  background: #FF0000;
+  margin: 0 5px;
+}
+
+.restaurant-detail-score {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 100%;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.restaurant-detail-reviews {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 100%;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.restaurant-action-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.action-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.action-text {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  text-align: center;
+  color: #000000;
+  margin-top: 5px;
+}
+
+/* 리뷰 상세 페이지 스타일 */
+.restaurant-review-card {
+  box-sizing: border-box;
+  width: 267px;
+  height: 150px;
+  background: rgba(237, 237, 237, 0.5);
+  border: 0.5px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 15px;
+  margin: 15px auto;
+}
+
+.review-restaurant-info {
+  display: flex;
+  align-items: center;
+}
+
+.review-restaurant-name {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 100%;
+  text-align: center;
+  color: #000000;
+}
+
+.review-restaurant-category {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 100%;
+  color: rgba(0, 0, 0, 0.7);
+  margin-left: 10px;
+}
+
+.review-rating {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.review-rating-star {
+  width: 20px;
+  height: 20px;
+  background: #2182D7;
+  margin-right: 2px;
+}
+
+.review-rating-label {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 100%;
+  text-align: center;
+  color: #000000;
+  margin-right: 10px;
+}
+
+.review-attribute {
+  margin-top: 10px;
+}
+
+.review-attribute-label {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 100%;
+  color: #2182D7;
+  margin-right: 5px;
+}
+
+.review-attribute-label.neutral {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.review-photos {
+  margin-top: 20px;
+}
+
+.review-photos-title {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 100%;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
+}
+
+.review-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.review-photo {
+  width: 131.31px;
+  height: 99.34px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.review-content {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 100%;
+  color: #000000;
+  margin-top: 20px;
+}
+
+/* 리뷰어 개인 페이지 스타일 */
+.reviewer-profile-header {
+  background: rgba(237, 237, 237, 0.5);
+  border: 0.5px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 15px;
+  margin: 15px auto;
+}
+
+.reviewer-profile-name {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 100%;
+  text-align: center;
+  color: #000000;
+}
+
+.reviewer-profile-avatar {
+  width: 90.65px;
+  height: 91px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: block;
+}
+
+.reviewer-profile-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.reviewer-profile-stat {
+  text-align: center;
+}
+
+.reviewer-profile-stat-label {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  color: #000000;
+}
+
+.reviewer-profile-stat-value {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  color: #FF0000;
+  margin-top: 5px;
+}
+
+.reviewer-profile-temperature-scale {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.temperature-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.temperature-dot {
+  width: 15px;
+  height: 15px;
+  background: rgba(217, 217, 217, 0.8);
+  border-radius: 50%;
+}
+
+.temperature-dot.active {
+  background: #2182D7;
+}
+
+.temperature-value {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 8px;
+  line-height: 100%;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 5px;
+}
+
+.temperature-line {
+  height: 4px;
+  flex: 1;
+  background: rgba(217, 217, 217, 0.9);
+  margin-top: 7px;
+}
+
+/* 마이 페이지 스타일 */
+.my-page-title {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+  margin: 20px 0;
+}
+
+.my-page-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.my-page-avatar {
+  width: 90.65px;
+  height: 91px;
+  border-radius: 50%;
+}
+
+.my-page-username {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+  margin-top: 10px;
+}
+
+.my-page-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.my-page-stat {
+  text-align: center;
+}
+
+.my-page-stat-value {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #000000;
+}
+
+.my-page-stat-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #000000;
+  margin-top: 5px;
+}
+
+.my-page-edit-button {
+  width: 174px;
+  height: 34px;
+  background: #9BDDE2;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.my-page-section-title {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+  margin: 20px 0;
+}
+
+.my-review-card {
+  margin: 20px 0;
+}
+
+.my-review-restaurant {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+}
+
+.my-review-rating {
+  display: flex;
+  margin: 10px 0;
+}
+
+.my-review-star {
+  width: 14px;
+  height: 14px;
+  background: url(image.png);
+  margin-right: 2px;
+}
+
+.my-review-content {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #000000;
+}
+
+/* 정보 수정 페이지 스타일 */
+.edit-profile-title {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+  margin: 20px 0;
+}
+
+.edit-profile-save {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 23px;
+  text-align: right;
+  color: #2196F3;
+  cursor: pointer;
+}
+
+.edit-profile-avatar-container {
+  position: relative;
+  width: 82px;
+  height: 82px;
+  margin: 0 auto;
+}
+
+.edit-profile-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.edit-profile-avatar-edit {
+  position: absolute;
+  width: 31px;
+  height: 31px;
+  bottom: 0;
+  right: 0;
+  background: url(image.png);
+  cursor: pointer;
+}
+
+.edit-profile-username {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 17px;
+  text-align: center;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.edit-profile-username-edit {
+  width: 11px;
+  height: 11px;
+  background: url(image.png);
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.edit-profile-bio-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+  margin: 10px 0;
+}
+
+.edit-profile-bio-input {
+  width: 281px;
+  height: 72px;
+  background: #EAEAEA;
+  border-radius: 15px;
+  border: none;
+  padding: 10px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #838383;
+  margin: 10px 0;
+  resize: none;
+}
+
+.edit-profile-info-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+  margin: 10px 0;
+}
+
+.edit-profile-info-value {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: right;
+  color: #000000;
+}
+
+.edit-profile-logout-button {
+  width: 281px;
+  height: 31px;
+  background: #9BDDE2;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* 위치 정보 허용 스타일 */
+.location-permission-container {
+  box-sizing: border-box;
+  width: 267px;
+  height: 440px;
+  background: rgba(237, 237, 237, 0.5);
+  border: 0.5px solid #000000;
+  border-radius: 25px;
+  margin: 100px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-permission-text {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  color: #000000;
+  max-width: 250px;
+}
+
+/* 로그인 스타일 */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.login-title {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+  margin-bottom: 30px;
+}
+
+.login-input-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+  margin-bottom: 10px;
+  align-self: flex-start;
+}
+
+.login-input {
+  box-sizing: border-box;
+  width: 284px;
+  height: 51px;
+  border: 0.5px solid #000000;
+  border-radius: 5px;
+  padding: 0 10px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: rgba(0, 0, 0, 0.46);
+  margin-bottom: 20px;
+}
+
+.login-button {
+  box-sizing: border-box;
+  width: 292px;
+  height: 60px;
+  background: #9BDDE2;
+  border: 0.3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+  color: #000000;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+/* 회원가입 스타일 */
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.signup-title {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+  margin: 20px 0;
+}
+
+.terms-container {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.terms-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.terms-checkbox {
+  width: 20px;
+  height: 20px;
+  background: #FFFFFF;
+  border: 1px solid #000000;
+  margin-right: 10px;
+}
+
+.terms-checkbox.checked {
+  background: #9BDDE2;
+}
+
+.terms-text {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #000000;
+}
+
+.terms-view {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 13px;
+  text-decoration-line: underline;
+  color: #777777;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.signup-line {
+  width: 100%;
+  height: 0px;
+  border: 0.3px solid rgba(0, 0, 0, 0.19);
+  margin: 20px 0;
+}
+
+.signup-button {
+  box-sizing: border-box;
+  width: 293px;
+  height: 55px;
+  background: #9BDDE2;
+  border: 0.3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+  color: #000000;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+/* 평가하기 스타일 */
+.rating-container {
+  padding: 20px;
+}
+
+.rating-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rating-title {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+}
+
+.rating-save {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 23px;
+  text-align: right;
+  color: #2196F3;
+  cursor: pointer;
+}
+
+.rating-overall-label {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 23px;
+  text-align: center;
+  color: #000000;
+  margin: 20px 0;
+}
+
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.rating-star {
+  width: 23px;
+  height: 23px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.rating-category-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+  margin: 20px 0;
+}
+
+.rating-attribute {
+  margin: 20px 0;
+}
+
+.rating-attribute-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+}
+
+.rating-attribute-options {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.rating-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rating-option-radio {
+  width: 19px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.rating-option-label {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 17px;
+  text-align: center;
+  color: #000000;
+  margin-top: 5px;
+}
+
+.rating-photos-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+  margin: 20px 0;
+}
+
+.rating-photos-container {
+  box-sizing: border-box;
+  width: 211px;
+  height: 125px;
+  border: 1px solid #000000;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.rating-photo-add {
+  width: 50px;
+  height: 49px;
+  cursor: pointer;
+}
+
+.rating-comment-label {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+  margin: 20px 0;
+}
+
+.rating-comment-input {
+  width: 276px;
+  height: 106px;
+  background: #EAEAEA;
+  border-radius: 15px;
+  border: none;
+  padding: 10px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #838383;
+  margin: 0 auto;
+  display: block;
+  resize: none;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .main-container {
+    width: 100%;
+  }
+  
+  .reviewer-card, 
+  .restaurant-review-card,
+  .location-permission-container,
+  .login-input,
+  .login-button,
+  .signup-button,
+  .rating-comment-input {
+    width: 90%;
+  }
+}

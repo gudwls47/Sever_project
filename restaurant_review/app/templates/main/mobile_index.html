@@ -1,0 +1,200 @@
+{% extends 'layouts/mobile_base.html' %}
+
+{% block title %}맛집 리뷰 랭킹 - 홈{% endblock %}
+
+{% block content %}
+<!-- 검색바 -->
+<div class="search-bar">
+    <input type="text" class="search-input" placeholder="검색">
+    <button class="search-button">
+        <i class="fas fa-search"></i>
+    </button>
+</div>
+
+<!-- 대표 이미지 -->
+<div style="position: relative;">
+    <img src="{{ url_for('static', filename='images/banner1.jpg') }}" class="restaurant-image" alt="대표 맛집">
+    <div class="restaurant-info-overlay">
+        <div class="restaurant-name">'핵밥' 숭실대점</div>
+        <div class="restaurant-address">서울특별시 동작구 상도로</div>
+    </div>
+</div>
+
+<!-- 이미지 슬라이더 인디케이터 -->
+<div class="slider-indicators">
+    <div class="slider-indicator active"></div>
+    <div class="slider-indicator"></div>
+    <div class="slider-indicator"></div>
+    <div class="slider-indicator"></div>
+    <div class="slider-indicator"></div>
+</div>
+
+<!-- 리뷰어 온도/리뷰 개수 탭 -->
+<div class="tabs-section">
+    <div class="tab active">리뷰어 온도 순위</div>
+    <div class="tab">리뷰 갯수 순위</div>
+</div>
+
+<!-- 리뷰어 목록 -->
+<div id="temperatureTab" class="reviewer-list">
+    <!-- 리뷰어 카드 1 -->
+    <div class="reviewer-card">
+        <img src="{{ url_for('static', filename='images/profile-placeholder.jpg') }}" class="reviewer-avatar" alt="리뷰어 프로필">
+        <div class="reviewer-info">
+            <div class="reviewer-rank">1등</div>
+            <div class="reviewer-name">상도동 풍자</div>
+            <div class="reviewer-temperature">
+                <div class="temperature-label">리뷰 온도</div>
+                <div class="temperature-value">100도</div>
+            </div>
+            <div class="temperature-bar">
+                <div class="temperature-fill" style="width: 100%;"></div>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/info-icon.png') }}" alt="정보" style="width: 17px; height: 17px;">
+    </div>
+    
+    <!-- 리뷰어 카드 2 -->
+    <div class="reviewer-card">
+        <img src="{{ url_for('static', filename='images/profile-placeholder.jpg') }}" class="reviewer-avatar" alt="리뷰어 프로필">
+        <div class="reviewer-info">
+            <div class="reviewer-rank">2등</div>
+            <div class="reviewer-name">맛집 킬러</div>
+            <div class="reviewer-temperature">
+                <div class="temperature-label">리뷰 온도</div>
+                <div class="temperature-value">98.9도</div>
+            </div>
+            <div class="temperature-bar">
+                <div class="temperature-fill" style="width: 95%;"></div>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/info-icon.png') }}" alt="정보" style="width: 17px; height: 17px;">
+    </div>
+    
+    <!-- 리뷰어 카드 3 -->
+    <div class="reviewer-card">
+        <img src="{{ url_for('static', filename='images/profile-placeholder.jpg') }}" class="reviewer-avatar" alt="리뷰어 프로필">
+        <div class="reviewer-info">
+            <div class="reviewer-rank">3등</div>
+            <div class="reviewer-name">냠냠</div>
+            <div class="reviewer-temperature">
+                <div class="temperature-label">리뷰 온도</div>
+                <div class="temperature-value">70.1도</div>
+            </div>
+            <div class="temperature-bar">
+                <div class="temperature-fill" style="width: 70%;"></div>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/info-icon.png') }}" alt="정보" style="width: 17px; height: 17px;">
+    </div>
+    
+    <!-- 리뷰어 카드 4 -->
+    <div class="reviewer-card">
+        <img src="{{ url_for('static', filename='images/profile-placeholder.jpg') }}" class="reviewer-avatar" alt="리뷰어 프로필">
+        <div class="reviewer-info">
+            <div class="reviewer-rank">4등</div>
+            <div class="reviewer-name">상도동 풍자</div>
+            <div class="reviewer-temperature">
+                <div class="temperature-label">리뷰 온도</div>
+                <div class="temperature-value">59.9도</div>
+            </div>
+            <div class="temperature-bar">
+                <div class="temperature-fill" style="width: 60%;"></div>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/info-icon.png') }}" alt="정보" style="width: 17px; height: 17px;">
+    </div>
+    
+    <!-- 리뷰어 카드 5 -->
+    <div class="reviewer-card">
+        <img src="{{ url_for('static', filename='images/profile-placeholder.jpg') }}" class="reviewer-avatar" alt="리뷰어 프로필">
+        <div class="reviewer-info">
+            <div class="reviewer-rank">5등</div>
+            <div class="reviewer-name">상도동 풍자</div>
+            <div class="reviewer-temperature">
+                <div class="temperature-label">리뷰 온도</div>
+                <div class="temperature-value">30.9도</div>
+            </div>
+            <div class="temperature-bar">
+                <div class="temperature-fill" style="width: 30%;"></div>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/info-icon.png') }}" alt="정보" style="width: 17px; height: 17px;">
+    </div>
+</div>
+
+<!-- 리뷰 개수 탭 (숨김 상태) -->
+<div id="reviewsTab" class="reviewer-list" style="display: none;">
+    <!-- 리뷰어 카드 1 -->
+    <div class="reviewer-card">
+        <img src="{{ url_for('static', filename='images/profile-placeholder.jpg') }}" class="reviewer-avatar" alt="리뷰어 프로필">
+        <div class="reviewer-info">
+            <div class="reviewer-rank">1등</div>
+            <div class="reviewer-name">상도동 풍자</div>
+            <div class="reviewer-temperature">
+                <div class="temperature-label">리뷰 개수</div>
+                <div class="temperature-value">321개</div>
+            </div>
+            <div class="temperature-bar">
+                <div class="temperature-fill" style="width: 100%;"></div>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/info-icon.png') }}" alt="정보" style="width: 17px; height: 17px;">
+    </div>
+    
+    <!-- 리뷰어 카드 2 -->
+    <div class="reviewer-card">
+        <img src="{{ url_for('static', filename='images/profile-placeholder.jpg') }}" class="reviewer-avatar" alt="리뷰어 프로필">
+        <div class="reviewer-info">
+            <div class="reviewer-rank">2등</div>
+            <div class="reviewer-name">맛집 킬러</div>
+            <div class="reviewer-temperature">
+                <div class="temperature-label">리뷰 개수</div>
+                <div class="temperature-value">285개</div>
+            </div>
+            <div class="temperature-bar">
+                <div class="temperature-fill" style="width: 90%;"></div>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/info-icon.png') }}" alt="정보" style="width: 17px; height: 17px;">
+    </div>
+    
+    <!-- 리뷰어 카드 3 -->
+    <div class="reviewer-card">
+        <img src="{{ url_for('static', filename='images/profile-placeholder.jpg') }}" class="reviewer-avatar" alt="리뷰어 프로필">
+        <div class="reviewer-info">
+            <div class="reviewer-rank">3등</div>
+            <div class="reviewer-name">냠냠</div>
+            <div class="reviewer-temperature">
+                <div class="temperature-label">리뷰 개수</div>
+                <div class="temperature-value">210개</div>
+            </div>
+            <div class="temperature-bar">
+                <div class="temperature-fill" style="width: 70%;"></div>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/info-icon.png') }}" alt="정보" style="width: 17px; height: 17px;">
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // 탭 전환 처리
+    $('.tab').click(function() {
+        $('.tab').removeClass('active');
+        $(this).addClass('active');
+        
+        // 탭 내용 전환
+        if ($(this).index() === 0) {
+            $('#temperatureTab').show();
+            $('#reviewsTab').hide();
+        } else {
+            $('#temperatureTab').hide();
+            $('#reviewsTab').show();
+        }
+    });
+});
+</script>
+{% endblock %}

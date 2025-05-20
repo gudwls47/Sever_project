@@ -1,0 +1,262 @@
+{% extends 'layouts/base.html' %} {% block title %}맛집 리뷰 랭킹 - 회원가입{%
+endblock %} {% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">회원가입</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="">
+            {{ form.hidden_tag() }}
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                {{ form.username.label(class="form-label") }} {% if
+                form.username.errors %} {{ form.username(class="form-control
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.username.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.username(class="form-control",
+                placeholder="2-20자 사이") }} {% endif %}
+              </div>
+
+              <div class="col-md-6">
+                {{ form.email.label(class="form-label") }} {% if
+                form.email.errors %} {{ form.email(class="form-control
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.email.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.email(class="form-control",
+                placeholder="example@mail.com") }} {% endif %}
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                {{ form.password.label(class="form-label") }} {% if
+                form.password.errors %} {{ form.password(class="form-control
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.password.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.password(class="form-control",
+                placeholder="8자 이상") }} {% endif %}
+              </div>
+
+              <div class="col-md-6">
+                {{ form.confirm_password.label(class="form-label") }} {% if
+                form.confirm_password.errors %} {{
+                form.confirm_password(class="form-control is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.confirm_password.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.confirm_password(class="form-control",
+                placeholder="비밀번호 확인") }} {% endif %}
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                {{ form.real_name.label(class="form-label") }} {% if
+                form.real_name.errors %} {{ form.real_name(class="form-control
+                is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.real_name.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.real_name(class="form-control",
+                placeholder="실명 (선택)") }} {% endif %}
+              </div>
+
+              <div class="col-md-6">
+                {{ form.phone_number.label(class="form-label") }} {% if
+                form.phone_number.errors %} {{
+                form.phone_number(class="form-control is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.phone_number.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+                {% else %} {{ form.phone_number(class="form-control",
+                placeholder="전화번호 (선택)") }} {% endif %}
+              </div>
+            </div>
+
+            <!-- 약관 동의 섹션 -->
+            <div class="mb-4">
+              <h5>서비스 약관 동의</h5>
+
+              <div class="mb-2">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="agreeAll"
+                  />
+                  <label class="form-check-label fw-bold" for="agreeAll">
+                    약관 전체 동의하기
+                  </label>
+                </div>
+              </div>
+
+              <hr />
+
+              {% for term in terms %} {% set field_name = 'terms_' ~
+              term.terms_id %}
+              <div class="mb-2">
+                <div class="form-check">
+                  {% if field_name in form %} {{
+                  form[field_name](class="form-check-input term-checkbox") }}
+                  <label class="form-check-label" for="{{ field_name }}">
+                    {% if term.is_required %}(필수){% else %}(선택){% endif %}
+                    {{ term.title }}
+                  </label>
+                  {% else %}
+                  <input
+                    type="checkbox"
+                    class="form-check-input term-checkbox"
+                    name="{{ field_name }}"
+                    id="{{ field_name }}"
+                    {%
+                    if
+                    term.is_required
+                    %}required{%
+                    endif
+                    %}
+                  />
+                  <label class="form-check-label" for="{{ field_name }}">
+                    {% if term.is_required %}(필수){% else %}(선택){% endif %}
+                    {{ term.title }}
+                  </label>
+                  {% endif %}
+                  <button
+                    type="button"
+                    class="btn btn-sm text-primary view-terms"
+                    data-bs-toggle="modal"
+                    data-bs-target="#termsModal{{ term.terms_id }}"
+                  >
+                    약관보기
+                  </button>
+                </div>
+              </div>
+
+              <!-- 약관 모달 -->
+              <div
+                class="modal fade"
+                id="termsModal{{ term.terms_id }}"
+                tabindex="-1"
+                aria-labelledby="termsModalLabel{{ term.terms_id }}"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5
+                        class="modal-title"
+                        id="termsModalLabel{{ term.terms_id }}"
+                      >
+                        {{ term.title }}
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">{{ term.content|safe }}</div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        닫기
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary agree-term"
+                        data-term-id="{{ term.terms_id }}"
+                      >
+                        동의
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+
+            <div class="d-grid gap-2">
+              {{ form.submit(class="btn btn-primary") }}
+            </div>
+          </form>
+        </div>
+        <div class="card-footer text-center">
+          <div class="small">
+            <a href="{{ url_for('auth.login') }}"
+              >이미 계정이 있으신가요? 로그인하기</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  // 약관 전체 동의 체크박스 기능
+  document.getElementById("agreeAll").addEventListener("change", function () {
+    const isChecked = this.checked;
+    document.querySelectorAll(".term-checkbox").forEach((checkbox) => {
+      checkbox.checked = isChecked;
+    });
+  });
+
+  // 약관 개별 체크박스 변경 시 전체 동의 체크박스 상태 업데이트
+  document.querySelectorAll(".term-checkbox").forEach((checkbox) => {
+    checkbox.addEventListener("change", function () {
+      const allChecked = Array.from(
+        document.querySelectorAll(".term-checkbox")
+      ).every((cb) => cb.checked);
+      document.getElementById("agreeAll").checked = allChecked;
+    });
+  });
+
+  // 약관 모달에서 동의 버튼 클릭 시 해당 약관 체크박스 체크
+  document.querySelectorAll(".agree-term").forEach((button) => {
+    button.addEventListener("click", function () {
+      const termId = this.getAttribute("data-term-id");
+      const checkbox = document.getElementById("terms_" + termId);
+      if (checkbox) {
+        checkbox.checked = true;
+
+        // 전체 동의 체크박스 상태 업데이트
+        const allChecked = Array.from(
+          document.querySelectorAll(".term-checkbox")
+        ).every((cb) => cb.checked);
+        document.getElementById("agreeAll").checked = allChecked;
+      }
+
+      // 모달 닫기
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("termsModal" + termId)
+      );
+      modal.hide();
+    });
+  });
+</script>
+{% endblock %}
