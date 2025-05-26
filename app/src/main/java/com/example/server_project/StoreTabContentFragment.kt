@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.server_project.ui.StoreReviewAdapter
+import com.example.server_project.model.ReviewerReview
 
 class StoreTabContentFragment : Fragment() {
 
@@ -29,7 +33,7 @@ class StoreTabContentFragment : Fragment() {
         val containerLayout = view.findViewById<LinearLayout>(R.id.tab_content_container)
 
         when (tabIndex) {
-            0 -> { // 홈 탭
+            0 -> {
                 addText(containerLayout, "위치: 서울특별시 동작구 상도로 123")
                 addText(containerLayout, "영업 중 / 오더 시간: 오전 11시 ~ 오후 9시")
                 addText(containerLayout, "전화번호: 02-123-4567")
@@ -38,7 +42,35 @@ class StoreTabContentFragment : Fragment() {
             }
             1 -> addText(containerLayout, "소식 탭입니다. 이벤트나 공지사항 표시.")
             2 -> addText(containerLayout, "메뉴 탭입니다. 대표 메뉴 이미지나 설명.")
-            3 -> addText(containerLayout, "리뷰 탭입니다. 별점 및 한줄평 표시.")
+            3 -> {
+                val reviewView = layoutInflater.inflate(R.layout.fragment_store_tab_review, containerLayout, false)
+
+                val restaurantName = arguments?.getString("restaurantName") ?: "가게 이름"
+                val prompt = reviewView.findViewById<TextView>(R.id.tv_review_prompt)
+                prompt.text = "‘$restaurantName’을 다녀오셨나요?\n클립과 리뷰로 경험을 남겨보세요!"
+
+                val dummyImages = listOf(
+                    R.drawable.sample_food_image,
+                    R.drawable.sample_food_image1
+                )
+
+                val dummyReviews = listOf(
+                    ReviewerReview(restaurantName, 4.5f, "음식이 훌륭했어요!", dummyImages),
+                    ReviewerReview(restaurantName, 4.0f, "분위기도 좋아요!", dummyImages),
+                    ReviewerReview(restaurantName, 3.5f, "기대 이상은 아니에요", dummyImages),
+                    ReviewerReview(restaurantName, 2.0f, "조금 아쉬웠어요", dummyImages),
+                    ReviewerReview(restaurantName, 5.0f, "최고입니다!!", dummyImages)
+                )
+
+                val recyclerView = reviewView.findViewById<RecyclerView>(R.id.recycler_store_reviews)
+                recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                recyclerView.adapter = StoreReviewAdapter(dummyReviews)
+
+                val countText = reviewView.findViewById<TextView>(R.id.tv_review_count)
+                countText.text = "리뷰 ${dummyReviews.size}"
+
+                containerLayout.addView(reviewView)
+            }
             4 -> addText(containerLayout, "사진 탭입니다. 이용자 사진들 나열.")
             5 -> addText(containerLayout, "주변 탭입니다. 가까운 장소 정보.")
             6 -> addText(containerLayout, "정보 탭입니다. 사업자 정보 및 운영 정보.")

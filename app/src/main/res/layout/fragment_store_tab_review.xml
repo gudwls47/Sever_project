@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="0dp">
+
+    <!-- 상단 안내 메시지 -->
+    <TextView
+        android:id="@+id/tv_review_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OOO을 다녀오셨나요?\n클립과 리뷰로 경험을 남겨보세요!"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 리뷰 쓰기 버튼 -->
+    <FrameLayout
+        android:id="@+id/btn_review_write"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp">
+
+        <ImageView
+            android:id="@+id/btn_review_write_iv"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/btn_review_box" />
+
+        <TextView
+            android:id="@+id/btn_review_write_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="리뷰 쓰기"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp" />
+    </FrameLayout>
+
+    <!-- 리뷰 개수 -->
+    <TextView
+        android:id="@+id/tv_review_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="리뷰 0"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- RecyclerView는 스크롤 전체를 담당 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_store_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:overScrollMode="always"
+        android:nestedScrollingEnabled="true"/>
+
+</LinearLayout>

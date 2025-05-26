@@ -20,7 +20,10 @@ class StoreDetailFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_store_detail, container, false)
 
-        // 더미 이미지 설정
+        // ✅ 가게 이름 전달 (추후 arguments로 받을 수도 있음)
+        val restaurantName = "밀알 식당" // 또는 arguments?.getString("restaurantName") ?: "알 수 없음"
+
+        // ✅ 대표 이미지 추가
         val storeImages = listOf(
             R.drawable.img_store_sample1,
             R.drawable.img_store_sample2,
@@ -39,17 +42,18 @@ class StoreDetailFragment : Fragment() {
             imageLayout.addView(imageView)
         }
 
-        // 탭 + 뷰페이저 연결
+        // ✅ 탭 + 뷰페이저 설정
+        val tabTitles = listOf("홈", "소식", "메뉴", "리뷰", "사진", "주변", "정보")
         val viewPager = view.findViewById<ViewPager2>(R.id.view_pager_store)
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_store)
-        val tabTitles = listOf("홈", "소식", "메뉴", "리뷰", "사진", "주변", "정보")
 
-        viewPager.adapter = StoreDetailPagerAdapter(this, tabTitles.size)
+        viewPager.adapter = StoreDetailPagerAdapter(this, tabTitles.size, restaurantName)
+
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
 
-        // 뒤로 가기
+        // ✅ 뒤로가기 버튼
         view.findViewById<ImageView>(R.id.btn_back).setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
