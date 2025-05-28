@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -68,6 +69,14 @@ class StoreTabContentFragment : Fragment() {
 
                 val countText = reviewView.findViewById<TextView>(R.id.tv_review_count)
                 countText.text = "리뷰 ${dummyReviews.size}"
+
+                val reviewWriteButton = reviewView.findViewById<FrameLayout>(R.id.btn_review_write)
+                reviewWriteButton.setOnClickListener {
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, ReviewWriteFragment())
+                        .addToBackStack(null)
+                        .commit()
+                }
 
                 containerLayout.addView(reviewView)
             }

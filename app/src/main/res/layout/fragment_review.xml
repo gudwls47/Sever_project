@@ -17,6 +17,7 @@
             android:paddingBottom="16dp">
 
             <ImageView
+                android:id="@+id/btn_back"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/baseline_arrow_back_ios_24"
