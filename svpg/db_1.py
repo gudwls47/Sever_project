@@ -3,9 +3,9 @@ from flask import g
 
 # MySQL 연결 설정
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'flask_app',
-    'password': 'your_password_here',  # 실제 비밀번호로 변경
+    'host': '127.0.0.1',
+    'user': 'root',
+    'password': 'root',  # 실제 비밀번호로 변경
     'database': 'restaurant_review',
     'charset': 'utf8mb4',
     'cursorclass': pymysql.cursors.DictCursor

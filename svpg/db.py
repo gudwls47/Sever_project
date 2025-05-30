@@ -1,9 +1,9 @@
 import mysql.connector
 
 conn = mysql.connector.connect(
-    host='localhost',
-    user='your_user',
-    password='your_password',
-    database='your_database'
+    host='127.0.0.1',
+    user='root',
+    password='root',
+    database='restaurant_review'
 )
 cursor = conn.cursor(dictionary=True)

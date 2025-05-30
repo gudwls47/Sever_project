@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.server_project.R
+import com.example.server_project.SignupAgreementFragment
 
 class RankingStartFragment : Fragment() {
 

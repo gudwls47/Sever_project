@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.server_project.R
+import com.example.server_project.SignupInfoFragment
 
 class SignupAgreementFragment : Fragment() {
 

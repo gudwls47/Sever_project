@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav = findViewById(R.id.main_bnv)
 
         // 초기 프래그먼트 설정
-        changeFragment(RankingStartFragment())
+        changeFragment(StartFragment())
 
         bottomNav.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateBottomNavVisibility(fragment: Fragment? = null) {
         val currentFragment = fragment ?: supportFragmentManager.findFragmentById(R.id.main_frm)
         val hideBottomNavFragments = listOf(
+            "StartFragment",
             "RankingStartFragment",
             "LoginFormFragment",
             "LoginFragment",
