@@ -10,8 +10,8 @@ app = Flask(__name__)
 # Register Blueprints
 app.register_blueprint(tags_bp)
 app.register_blueprint(reviews_bp)
-app.register_blueprint(users_bp)
 app.register_blueprint(ocr_bp)
+app.register_blueprint(users_bp, url_prefix='/users')
 
 if __name__ == '__main__':
     app.run(debug=True)

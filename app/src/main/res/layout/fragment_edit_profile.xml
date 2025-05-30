@@ -84,6 +84,7 @@
                     android:gravity="center"
                     android:layout_marginTop="8dp">
 
+                    <!-- 닉네임 보여주기 TextView -->
                     <TextView
                         android:id="@+id/tv_nickname"
                         android:layout_width="wrap_content"
@@ -100,6 +101,17 @@
                         android:src="@drawable/ic_edit"
                         android:contentDescription="닉네임 수정" />
                 </LinearLayout>
+
+                <!-- 닉네임 수정용 EditText (처음에는 숨김) -->
+                <EditText
+                    android:id="@+id/edit_nickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="닉네임을 입력하세요"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
 
             <!-- 자기소개 -->
@@ -217,7 +229,7 @@
                 android:backgroundTint="#B2EBF2"
                 android:textColor="#000000"
                 android:layout_marginTop="32dp"
-                android:layout_marginBottom="32dp"/>
+                android:layout_marginBottom="32dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

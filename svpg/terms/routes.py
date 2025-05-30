@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required, current_user
 from . import terms_bp
-from ..db import get_db_connection
+from ..db_1 import get_db_connection
 
 # 약관 목록
 @terms_bp.route('/')

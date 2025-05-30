@@ -5,9 +5,9 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-this'
     
     # MySQL 설정
-    MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'localhost'
-    MYSQL_USER = os.environ.get('MYSQL_USER') or 'flask_app'
-    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'your_password_here'
+    MYSQL_HOST = os.environ.get('MYSQL_HOST') or '127.0.0.1'
+    MYSQL_USER = os.environ.get('MYSQL_USER') or 'root'
+    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'root'
     MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE') or 'restaurant_review'
     
     # 업로드 설정

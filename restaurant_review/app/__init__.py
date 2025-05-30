@@ -5,6 +5,9 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_wtf.csrf import CSRFProtect
 
+from svpg.init_db import initialize_database
+
+
 # Initialize extensions
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -36,14 +39,17 @@ def create_app(config_name='default'):
     from app.routes.main import main_bp
     from app.routes.restaurant import restaurant_bp
     from app.routes.review import review_bp
-    
+    from svpg.users.routes import users_bp
+
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(restaurant_bp)
     app.register_blueprint(review_bp)
+    app.register_blueprint(users_bp)
     
     # Create database tables if they don't exist
     with app.app_context():
+        initialize_database()
         db.create_all()
     
     return app
