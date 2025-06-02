@@ -1,5 +1,7 @@
 import os
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
 class Config:
     """기본 설정"""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-this'
@@ -9,9 +11,8 @@ class Config:
     MYSQL_USER = os.environ.get('MYSQL_USER') or 'root'
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'root'
     MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE') or 'restaurant_review'
-    
-    # 업로드 설정
-    UPLOAD_FOLDER = 'static/uploads'
+
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, '..', 'restaurant_review', 'static', 'uploads')
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
     
     # 세션 설정

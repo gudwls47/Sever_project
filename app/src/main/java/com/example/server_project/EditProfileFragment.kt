@@ -103,6 +103,9 @@ class EditProfileFragment : Fragment() {
                 selectedImageUri?.let { uri ->
                     uploadProfileImage(userId, uri.toString()) // 서버에 맞게 변환 필요
                 }
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.main_frm, MypageFragment())
+                    .commit()
             }
         }
 

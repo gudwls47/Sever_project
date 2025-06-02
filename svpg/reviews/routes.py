@@ -1,13 +1,25 @@
+import os
+import uuid
 from flask import Blueprint, request, jsonify
-from db import conn, cursor
+from ..db import conn, cursor
+from app import csrf
+from werkzeug.utils import secure_filename
+
+# 이미지 업로드 폴더 경로 설정
+UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'static', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 reviews_bp = Blueprint('reviews', __name__)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def calculate_trust_score(user_id):
     try:
         cursor.execute("""
             SELECT review_count, receipt_verified_count, like_received_count
-            FROM UserScore
+            FROM user_score
             WHERE user_id = %s
         """, (user_id,))
         user_score = cursor.fetchone()
@@ -26,7 +38,7 @@ def calculate_trust_score(user_id):
         trust_score = int(min(100, base_score + verified_ratio + like_score))
 
         cursor.execute("""
-            UPDATE UserScore
+            UPDATE user_score
             SET trust_score = %s
             WHERE user_id = %s
         """, (trust_score, user_id))
@@ -35,9 +47,7 @@ def calculate_trust_score(user_id):
         conn.rollback()
         print("Error updating trust_score:", e)
 
-
-
-# ✅ 리뷰 등록 API
+@csrf.exempt
 @reviews_bp.route('/reviews', methods=['POST'])
 def create_review():
     data = request.json
@@ -51,92 +61,59 @@ def create_review():
     service_rating = data.get('service_rating')
 
     if not all([user_id, restaurant_id, rating, content]):
-        receipt_text = data.get('receipt_text')  # OCR 결과
-
-        if receipt_verified:
-            cursor.execute("SELECT name FROM Restaurant WHERE restaurant_id = %s", (restaurant_id,))
-            result = cursor.fetchone()
-        if not result:
-            return jsonify({"error": "Restaurant not found"}), 404
-        restaurant_name = result['name']
-        if not receipt_text or restaurant_name not in receipt_text:
-            return jsonify({"error": "Receipt does not match restaurant name."}), 403
+        return jsonify({"error": "일반 항목 누락"}), 400
 
     try:
         cursor.execute("""
-            INSERT INTO Review (user_id, restaurant_id, rating, content, receipt_verified)
+            INSERT INTO review (user_id, restaurant_id, rating, content, receipt_verified)
             VALUES (%s, %s, %s, %s, %s)
         """, (user_id, restaurant_id, rating, content, receipt_verified))
         review_id = cursor.lastrowid
 
         if all([taste_rating, price_rating, service_rating]):
             cursor.execute("""
-                INSERT INTO ReviewDetail (review_id, taste_rating, price_rating, service_rating)
+                INSERT INTO review_detail (review_id, taste_rating, price_rating, service_rating)
                 VALUES (%s, %s, %s, %s)
             """, (review_id, taste_rating, price_rating, service_rating))
 
-        # 사용자 점수 테이블 업데이트
-        cursor.execute("SELECT * FROM UserScore WHERE user_id = %s", (user_id,))
+        cursor.execute("SELECT * FROM user_score WHERE user_id = %s", (user_id,))
         score = cursor.fetchone()
         if score:
             cursor.execute("""
-                UPDATE UserScore
+                UPDATE user_score
                 SET review_count = review_count + 1,
                     receipt_verified_count = receipt_verified_count + %s
                 WHERE user_id = %s
             """, (1 if receipt_verified else 0, user_id))
         else:
             cursor.execute("""
-                INSERT INTO UserScore (user_id, review_count, receipt_verified_count)
+                INSERT INTO user_score (user_id, review_count, receipt_verified_count)
                 VALUES (%s, %s, %s)
             """, (user_id, 1, 1 if receipt_verified else 0))
 
         calculate_trust_score(user_id)
-
         conn.commit()
         return jsonify({"message": "Review created", "review_id": review_id}), 201
     except Exception as e:
         conn.rollback()
         return jsonify({"error": str(e)}), 500
 
-# ✅ 리뷰 수정 API
-@reviews_bp.route('/reviews/<int:review_id>', methods=['PUT'])
-def update_review(review_id):
-    data = request.json
-    rating = data.get('rating')
-    content = data.get('content')
-    receipt_verified = data.get('receipt_verified')
-    taste_rating = data.get('taste_rating')
-    price_rating = data.get('price_rating')
-    service_rating = data.get('service_rating')
+@csrf.exempt
+@reviews_bp.route('/review-upload', methods=['POST'])
+def upload_review_image():
+    file = request.files.get('file')
+    if not file or not allowed_file(file.filename):
+        return jsonify({"error": "Invalid or missing file"}), 400
 
-    try:
-        cursor.execute("""
-            UPDATE Review
-            SET rating = %s, content = %s, receipt_verified = %s, updated_at = NOW()
-            WHERE review_id = %s
-        """, (rating, content, receipt_verified, review_id))
+    ext = os.path.splitext(secure_filename(file.filename))[1]
+    filename = f"{uuid.uuid4().hex}{ext}"
+    save_path = os.path.join(UPLOAD_FOLDER, filename)
+    file.save(save_path)
 
-        cursor.execute("SELECT * FROM ReviewDetail WHERE review_id = %s", (review_id,))
-        if cursor.fetchone():
-            cursor.execute("""
-                UPDATE ReviewDetail
-                SET taste_rating = %s, price_rating = %s, service_rating = %s
-                WHERE review_id = %s
-            """, (taste_rating, price_rating, service_rating, review_id))
-        else:
-            cursor.execute("""
-                INSERT INTO ReviewDetail (review_id, taste_rating, price_rating, service_rating)
-                VALUES (%s, %s, %s, %s)
-            """, (review_id, taste_rating, price_rating, service_rating))
+    file_url = f"http://{request.host}/static/uploads/{filename}"
+    return jsonify({"url": file_url}), 200
 
-        conn.commit()
-        return jsonify({"message": "Review updated"}), 200
-    except Exception as e:
-        conn.rollback()
-        return jsonify({"error": str(e)}), 500
-
-# ✅ 리뷰 이미지 URL 저장 API
+@csrf.exempt
 @reviews_bp.route('/review-images', methods=['POST'])
 def add_review_image():
     data = request.json
@@ -148,7 +125,7 @@ def add_review_image():
 
     try:
         cursor.execute("""
-            INSERT INTO ReviewImage (review_id, image_url)
+            INSERT INTO review_image (review_id, image_url)
             VALUES (%s, %s)
         """, (review_id, image_url))
         conn.commit()
@@ -157,160 +134,48 @@ def add_review_image():
         conn.rollback()
         return jsonify({"error": str(e)}), 500
 
-# ✅ 좋아요 등록 API
-@reviews_bp.route('/likes', methods=['POST'])
-def like_review():
-    data = request.json
-    user_id = data.get('user_id')
-    review_id = data.get('review_id')
 
-    if not all([user_id, review_id]):
-        return jsonify({"error": "user_id and review_id required"}), 400
-
-    try:
-        cursor.execute("""
-            INSERT IGNORE INTO `Like` (user_id, review_id)
-            VALUES (%s, %s)
-        """, (user_id, review_id))
-
-        cursor.execute("SELECT user_id FROM Review WHERE review_id = %s", (review_id,))
-        target = cursor.fetchone()
-        if target:
-            target_user_id = target['user_id']
-            cursor.execute("SELECT * FROM UserScore WHERE user_id = %s", (target_user_id,))
-            score = cursor.fetchone()
-            if score:
-                cursor.execute("UPDATE UserScore SET like_received_count = like_received_count + 1 WHERE user_id = %s", (target_user_id,))
-            else:
-                cursor.execute("INSERT INTO UserScore (user_id, like_received_count) VALUES (%s, 1)", (target_user_id,))
-            calculate_trust_score(target_user_id)
-
-        conn.commit()
-        return jsonify({"message": "Liked"}), 201
-    except Exception as e:
-        conn.rollback()
-        return jsonify({"error": str(e)}), 500
-
-# ✅ 좋아요 취소 API
-@reviews_bp.route('/likes', methods=['DELETE'])
-def unlike_review():
-    data = request.json
-    user_id = data.get('user_id')
-    review_id = data.get('review_id')
-
-    if not all([user_id, review_id]):
-        return jsonify({"error": "user_id and review_id required"}), 400
-
-    try:
-        cursor.execute("DELETE FROM `Like` WHERE user_id = %s AND review_id = %s", (user_id, review_id))
-        cursor.execute("SELECT user_id FROM Review WHERE review_id = %s", (review_id,))
-        target = cursor.fetchone()
-        if target:
-            target_user_id = target['user_id']
-            cursor.execute("UPDATE UserScore SET like_received_count = GREATEST(0, like_received_count - 1) WHERE user_id = %s", (target_user_id,))
-            calculate_trust_score(target_user_id)
-
-        conn.commit()
-        return jsonify({"message": "Unliked"}), 200
-    except Exception as e:
-        conn.rollback()
-        return jsonify({"error": str(e)}), 500
-
-# ✅ 리뷰 삭제 API (이미지, 디테일, 좋아요도 함께 삭제)
-@reviews_bp.route('/reviews/<int:review_id>', methods=['DELETE'])
-def delete_review(review_id):
-    try:
-        cursor.execute("SELECT user_id, receipt_verified FROM Review WHERE review_id = %s", (review_id,))
-        review = cursor.fetchone()
-        if not review:
-            return jsonify({"error": "Review not found"}), 404
-
-        user_id = review['user_id']
-        verified = review['receipt_verified']
-
-        cursor.execute("DELETE FROM ReviewImage WHERE review_id = %s", (review_id,))
-        cursor.execute("DELETE FROM ReviewDetail WHERE review_id = %s", (review_id,))
-        cursor.execute("DELETE FROM `Like` WHERE review_id = %s", (review_id,))
-        cursor.execute("DELETE FROM Review WHERE review_id = %s", (review_id,))
-
-        cursor.execute("SELECT * FROM UserScore WHERE user_id = %s", (user_id,))
-        score = cursor.fetchone()
-        if score:
-            cursor.execute("""
-                UPDATE UserScore 
-                SET review_count = GREATEST(0, review_count - 1),
-                    receipt_verified_count = GREATEST(0, receipt_verified_count - %s)
-                WHERE user_id = %s
-            """, (1 if verified else 0, user_id))
-            calculate_trust_score(user_id)
-
-        conn.commit()
-        return jsonify({"message": "Review deleted"}), 200
-    except Exception as e:
-        conn.rollback()
-        return jsonify({"error": str(e)}), 500
-
-# ✅ 특정 리뷰의 좋아요 수 조회 API
-@reviews_bp.route('/reviews/<int:review_id>/likes', methods=['GET'])
-def count_likes(review_id):
-    cursor.execute("""
-        SELECT COUNT(*) AS like_count
-        FROM `Like`
-        WHERE review_id = %s
-    """, (review_id,))
-    result = cursor.fetchone()
-    return jsonify(result), 200
-
-# ✅ 사용자가 좋아요 누른 리뷰 목록 조회 API
-@reviews_bp.route('/users/<int:user_id>/liked-reviews', methods=['GET'])
-def get_user_liked_reviews(user_id):
-    cursor.execute("""
-        SELECT r.* FROM Review r
-        JOIN `Like` l ON r.review_id = l.review_id
-        WHERE l.user_id = %s
-        ORDER BY l.created_at DESC
-    """, (user_id,))
-    return jsonify(cursor.fetchall()), 200
-
-# ✅ 특정 식당의 리뷰 목록 조회 API
-@reviews_bp.route('/restaurants/<int:restaurant_id>/reviews', methods=['GET'])
-def get_reviews_by_restaurant(restaurant_id):
-    cursor.execute("""
-        SELECT * FROM Review
-        WHERE restaurant_id = %s
-        ORDER BY created_at DESC
-    """, (restaurant_id,))
-    return jsonify(cursor.fetchall()), 200
-
-# ✅ 리뷰 상세 조회 API (디테일, 이미지, 좋아요 포함)
-@reviews_bp.route('/reviews/<int:review_id>', methods=['GET'])
-def get_review_detail(review_id):
-    cursor.execute("SELECT * FROM Review WHERE review_id = %s", (review_id,))
-    review = cursor.fetchone()
-    if review:
-        cursor.execute("SELECT * FROM ReviewDetail WHERE review_id = %s", (review_id,))
-        detail = cursor.fetchone()
-        review['detail'] = detail
-
-        cursor.execute("SELECT image_url FROM ReviewImage WHERE review_id = %s", (review_id,))
-        images = cursor.fetchall()
-        review['images'] = [img['image_url'] for img in images]
-
-        cursor.execute("SELECT COUNT(*) AS like_count FROM `Like` WHERE review_id = %s", (review_id,))
-        review['like_count'] = cursor.fetchone()['like_count']
-
-        return jsonify(review), 200
-    else:
-        return jsonify({"error": "Review not found"}), 404
-
-
-# ✅ 사용자별 리뷰 목록 조회 API
 @reviews_bp.route('/users/<int:user_id>/reviews', methods=['GET'])
 def get_reviews_by_user(user_id):
-    cursor.execute("""
-        SELECT * FROM Review
-        WHERE user_id = %s
-        ORDER BY created_at DESC
-    """, (user_id,))
-    return jsonify(cursor.fetchall()), 200
+    try:
+        conn.ping(reconnect=True)
+
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute("""
+                SELECT r.*, 
+                       u.nickname, u.profile_image, 
+                       res.name AS restaurant_name
+                FROM review r
+                JOIN user u ON r.user_id = u.user_id
+                JOIN restaurant res ON r.restaurant_id = res.restaurant_id
+                WHERE r.user_id = %s
+                ORDER BY r.created_at DESC
+            """, (user_id,))
+            reviews = cursor.fetchall()
+
+        for review in reviews:
+            review_id = review['review_id']
+
+            # taste, price, service rating 가져오기
+            with conn.cursor(dictionary=True) as cursor2:
+                cursor2.execute("SELECT * FROM review_detail WHERE review_id = %s", (review_id,))
+                detail = cursor2.fetchone()
+                review['taste_rating'] = detail['taste_rating'] if detail else None
+                review['price_rating'] = detail['price_rating'] if detail else None
+                review['service_rating'] = detail['service_rating'] if detail else None
+
+            # ✅ 리뷰 이미지 고정 (무조건 test.jpg 반환)
+            test_image_url = f"http://{request.host}/static/uploads/test.jpg"
+            review['images'] = [test_image_url]
+
+            # 좋아요 수
+            with conn.cursor(dictionary=True) as cursor3:
+                cursor3.execute("SELECT COUNT(*) AS like_count FROM `like` WHERE review_id = %s", (review_id,))
+                review['like_count'] = cursor3.fetchone()['like_count']
+
+        return jsonify(reviews), 200
+    except Exception as e:
+        print("리뷰 조회 중 오류:", e)
+        return jsonify({"error": str(e)}), 500
+
 

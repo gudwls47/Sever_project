@@ -1,6 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 작성자 정보 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:id="@+id/review_user_profile"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_profile_placeholder"
+            android:scaleType="centerCrop"
+            android:background="@drawable/round_image"
+            android:clipToOutline="true" />
+
+        <TextView
+            android:id="@+id/review_user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="닉네임"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- 이미지 그리드 (대표 1장만 보여줘도 됨) -->
+    <ImageView
+        android:id="@+id/review_image"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="8dp"
+        android:visibility="visible" />
+
+    <!-- 식당 이름 -->
+    <TextView
+        android:id="@+id/review_restaurant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="영빈제과"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp" />
+
+    <!-- 별점 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start"
+        android:layout_marginBottom="8dp">
+
+        <RatingBar
+            android:id="@+id/review_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1.0"
+            android:isIndicator="true"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:layout_gravity="start" />
+
+    </LinearLayout>
+
+
+    <!-- 리뷰 본문 -->
+    <TextView
+        android:id="@+id/review_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="리뷰 내용"
+        android:textSize="14sp"
+        android:layout_marginBottom="4dp"
+        android:maxLines="3"
+        android:ellipsize="end" />
+
+    <!-- 맛/가격/응대 요약 -->
+    <TextView
+        android:id="@+id/review_detail_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="맛: 보통 | 가격: 보통 | 응대: 보통"
+        android:textSize="13sp"
+        android:textColor="#666666"
+        android:layout_marginBottom="4dp" />
+
+    <!-- 더보기 -->
+    <TextView
+        android:id="@+id/review_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="...더보기"
+        android:textColor="#666666"
+        android:textSize="13sp"
+        android:visibility="gone" />
+</LinearLayout>

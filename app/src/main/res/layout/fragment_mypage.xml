@@ -37,6 +37,7 @@
                 android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_profile_placeholder"
+                android:background="@drawable/round_image"
                 android:scaleType="centerCrop"
                 android:layout_marginBottom="8dp" />
 
@@ -126,11 +127,13 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp" />
 
-            <!-- 맛집 카드 1 -->
-            <!-- ... 기존 카드 레이아웃 유지 ... -->
-
-            <!-- 맛집 카드 2 -->
-            <!-- ... 기존 카드 레이아웃 유지 ... -->
+            <!-- 맛집 카드-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="16dp"/>
 
         </LinearLayout>
     </ScrollView>

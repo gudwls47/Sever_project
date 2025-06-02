@@ -46,4 +46,21 @@ interface ServerApi {
     @GET("/users/{user_id}/profile")
     fun getUserProfile(@Path("user_id") userId: Int): Call<UserProfileResponse>
 
+    @POST("/reviews")
+    fun createReview(@Body reviewData: Map<String, @JvmSuppressWildcards Any>): Call<Map<String, Any>>
+
+    @GET("users/{user_id}/reviews")
+    fun getUserReviews(@Path("user_id") userId: Int): Call<List<Review>>
+
+    @POST("/review-images")
+    fun addReviewImage(
+        @Body request: ReviewImageRequest
+    ): Call<ApiResponse>
+
+    @Multipart
+    @POST("/review-upload")
+    fun uploadReviewImage(
+        @Part file: MultipartBody.Part
+    ): Call<Map<String, String>>
+
 }
