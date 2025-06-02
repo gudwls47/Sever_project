@@ -7,7 +7,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:layout_marginTop="20dp">
 
         <!-- 뒤로가기 버튼 -->
         <ImageView
@@ -60,7 +61,7 @@
                 android:id="@+id/tv_store_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="영업 중 · ⭐ 4.83 · 리뷰 595"
+                android:text="영업 중 · ⭐ 4.83 · 리뷰 52"
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:layout_marginTop="4dp"

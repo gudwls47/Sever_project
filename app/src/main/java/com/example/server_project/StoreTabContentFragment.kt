@@ -68,7 +68,7 @@ class StoreTabContentFragment : Fragment() {
                 recyclerView.adapter = StoreReviewAdapter(dummyReviews)
 
                 val countText = reviewView.findViewById<TextView>(R.id.tv_review_count)
-                countText.text = "리뷰 ${dummyReviews.size}"
+                countText.text = "리뷰 52개"
 
                 val reviewWriteButton = reviewView.findViewById<FrameLayout>(R.id.btn_review_write)
                 reviewWriteButton.setOnClickListener {

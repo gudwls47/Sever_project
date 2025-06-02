@@ -21,7 +21,7 @@ class StoreDetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_store_detail, container, false)
 
         // ✅ 가게 이름 전달 (추후 arguments로 받을 수도 있음)
-        val restaurantName = "밀알 식당" // 또는 arguments?.getString("restaurantName") ?: "알 수 없음"
+        val restaurantName = "핵밥" // 또는 arguments?.getString("restaurantName") ?: "알 수 없음"
 
         // ✅ 대표 이미지 추가
         val storeImages = listOf(
