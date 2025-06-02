@@ -24,7 +24,7 @@ class StartFragment : Fragment() {
 
         signupButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.main_frm, SignupInfoFragment())
+                .replace(R.id.main_frm, SignupAgreementFragment())
                 .addToBackStack(null)
                 .commit()
         }

@@ -1,4 +1,6 @@
 package com.example.server_project.api
 
-class ReviewImageRequest {
-}
+data class ReviewImageRequest(
+    val review_id: Int,
+    val image_url: String
+)

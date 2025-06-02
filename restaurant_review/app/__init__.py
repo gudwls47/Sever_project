@@ -14,10 +14,17 @@ login_manager = LoginManager()
 bcrypt = Bcrypt()
 csrf = CSRFProtect()
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
 def create_app(config_name='default'):
     from app.config import config
-    
-    app = Flask(__name__)
+
+    app = Flask(
+        __name__,
+        static_folder=os.path.join(BASE_DIR, '..', 'static'),
+        static_url_path='/static'
+    )
+
     app.config.from_object(config[config_name])
     
     # Initialize extensions with app
@@ -38,13 +45,13 @@ def create_app(config_name='default'):
     from app.routes.auth import auth_bp
     from app.routes.main import main_bp
     from app.routes.restaurant import restaurant_bp
-    from app.routes.review import review_bp
+    from svpg.reviews.routes import reviews_bp
     from svpg.users.routes import users_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(restaurant_bp)
-    app.register_blueprint(review_bp)
+    app.register_blueprint(reviews_bp)
     app.register_blueprint(users_bp)
     
     # Create database tables if they don't exist

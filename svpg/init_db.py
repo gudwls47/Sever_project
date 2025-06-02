@@ -59,7 +59,6 @@ def initialize_database():
         restaurant_id INT,
         rating INT,
         content TEXT,
-        image_url VARCHAR(255),
         receipt_verified BOOLEAN DEFAULT FALSE,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
@@ -141,6 +140,12 @@ def initialize_database():
         FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
         FOREIGN KEY (terms_id) REFERENCES Terms(terms_id) ON DELETE CASCADE
     );
+    """)
+
+    # 테스트용 식당 삽입
+    cursor.execute("""
+    INSERT IGNORE INTO Restaurant (restaurant_id, name, address, category, phone, latitude, longitude)
+    VALUES (1, '테스트 식당', '서울특별시 테스트구 테스트로 1', '한식', '02-123-4567', 37.5665, 126.9780);
     """)
 
     conn.commit()

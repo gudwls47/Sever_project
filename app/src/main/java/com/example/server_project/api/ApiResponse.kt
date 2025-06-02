@@ -1,4 +1,5 @@
 package com.example.server_project.api
 
-class ApiResponse {
-}
+data class ApiResponse(
+    val message: String
+)
