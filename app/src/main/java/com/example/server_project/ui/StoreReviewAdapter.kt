@@ -31,7 +31,7 @@ class StoreReviewAdapter(private val reviews: List<ReviewerReview>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = reviews[position]
-        holder.nickname.text = "닉네임"  // 현재는 고정, 나중에 서버 연동 시 실제 닉네임 사용 가능
+        holder.nickname.text = "user${position + 1}"  // 현재는 고정, 나중에 서버 연동 시 실제 닉네임 사용 가능
         holder.content.text = item.content
         holder.ratingBar.rating = item.rating
 

@@ -83,7 +83,7 @@ class SignupInfoFragment : Fragment() {
 
                 Log.d("DEBUG_JSON", json.toString())
 
-                val url = URL("http://192.168.219.105:5000/users/signup") // 🛑 Flask 서버 주소 확인
+                val url = URL("http://10.0.2.2:5001/users/signup") // 🛑 Flask 서버 주소 확인
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8")

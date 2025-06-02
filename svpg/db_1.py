@@ -5,7 +5,7 @@ from flask import g
 DB_CONFIG = {
     'host': '127.0.0.1',
     'user': 'root',
-    'password': 'root',  # 실제 비밀번호로 변경
+    'password': 'root1234',  # 실제 비밀번호로 변경
     'database': 'restaurant_review',
     'charset': 'utf8mb4',
     'cursorclass': pymysql.cursors.DictCursor

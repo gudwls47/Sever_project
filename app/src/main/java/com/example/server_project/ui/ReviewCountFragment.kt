@@ -21,11 +21,14 @@ class ReviewCountFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_reviewcount)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        val reviewers = List(10) {
+        val names = listOf("상도동 풍자", "먹잘알", "냠냠", "먹짱", "서현", "형진", "우석", "용하", "8조최고", "맛있다")
+            .shuffled() // ✅ 랜덤 순서로 섞기
+
+        val reviewers = names.mapIndexed { index, name ->
             Reviewer(
-                rank = "${it + 1}등",
-                name = "상도동 풍자",
-                temperature = (321 - it * 30).toFloat(), // 리뷰 수로 사용
+                rank = "${index + 1}등",
+                name = name,
+                temperature = (321 - index * 30).toFloat(), // 리뷰 수로 활용
                 profileImageRes = R.drawable.img_sample_profile
             )
         }

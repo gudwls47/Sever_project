@@ -22,11 +22,13 @@ class TemperatureFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_temperature)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        val reviewers = List(10) {
+        val names = listOf("상도동 풍자", "먹잘알", "냠냠", "먹짱", "서현", "형진", "우석", "용하", "8조최고", "맛있다")
+
+        val reviewers = names.mapIndexed { index, name ->
             Reviewer(
-                rank = "${it + 1}등",
-                name = "상도동 풍자",
-                temperature = (100 - it * 10).toFloat(),
+                rank = "${index + 1}등",
+                name = name,
+                temperature = (100 - index * 10).toFloat(),
                 profileImageRes = R.drawable.img_sample_profile
             )
         }

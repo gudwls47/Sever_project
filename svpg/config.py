@@ -9,7 +9,7 @@ class Config:
     # MySQL 설정
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or '127.0.0.1'
     MYSQL_USER = os.environ.get('MYSQL_USER') or 'root'
-    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'root'
+    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'root1234'
     MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE') or 'restaurant_review'
 
     UPLOAD_FOLDER = os.path.join(BASE_DIR, '..', 'restaurant_review', 'static', 'uploads')

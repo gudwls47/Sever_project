@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:paddingHorizontal="16dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginTop="20dp">
 
         <ImageView
             android:id="@+id/btn_back"
@@ -90,10 +91,10 @@
                         android:id="@+id/tv_nickname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="닉네임"
+                        android:layout_marginEnd="4dp"
+                        android:text="user"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="4dp" />
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/btn_edit_nickname"

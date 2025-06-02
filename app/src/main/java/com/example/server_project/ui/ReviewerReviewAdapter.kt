@@ -22,8 +22,10 @@ class ReviewerReviewAdapter(
         val restaurantName: TextView = view.findViewById(R.id.tv_restaurant_name)
         val ratingBar: RatingBar = view.findViewById(R.id.rating_bar)
         val content: TextView = view.findViewById(R.id.tv_review_content)
-        val imageLayout: LinearLayout = view.findViewById(R.id.layout_images)
+        val imageRow1: LinearLayout = view.findViewById(R.id.layout_images_row1)
+        val imageRow2: LinearLayout = view.findViewById(R.id.layout_images_row2)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -38,20 +40,33 @@ class ReviewerReviewAdapter(
         holder.content.text = review.content
 
         // 이미지 초기화 (재활용 대응)
-        holder.imageLayout.removeAllViews()
+        holder.imageRow1.removeAllViews()
+        holder.imageRow2.removeAllViews()
 
-        review.imageList.take(4).forEach { resId ->
+        val images = review.imageList.take(4)
+
+        images.take(2).forEach { resId ->
             val imageView = ImageView(holder.itemView.context).apply {
                 setImageResource(resId)
                 layoutParams = LinearLayout.LayoutParams(100, 100).apply {
-                    setMargins(8, 0, 8, 0)
+                    setMargins(4, 4, 4, 4)
                 }
                 scaleType = ImageView.ScaleType.CENTER_CROP
             }
-            holder.imageLayout.addView(imageView)
+            holder.imageRow1.addView(imageView)
         }
 
-        // ✅ 아이템 클릭 → 상세 페이지로 이동
+        images.drop(2).forEach { resId ->
+            val imageView = ImageView(holder.itemView.context).apply {
+                setImageResource(resId)
+                layoutParams = LinearLayout.LayoutParams(100, 100).apply {
+                    setMargins(4, 4, 4, 4)
+                }
+                scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+            holder.imageRow2.addView(imageView)
+        }
+
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val activity = context as? FragmentActivity ?: return@setOnClickListener
@@ -73,6 +88,7 @@ class ReviewerReviewAdapter(
                 .commit()
         }
     }
+
 
     override fun getItemCount(): Int = reviewList.size
 }
